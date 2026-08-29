@@ -11,6 +11,10 @@
   --color-btn-active: #de8c98;
   --color-btn-pressed: #a16b73;
   --color-field: #fbfbfb;
+  --color-field-dark: #1e2235;
+  --color-muted: #787f9a;
+  --color-back-bg: #222639;
+  --color-back-icon: #b8bdd6;
 }
 
 /* 홈 배너 그라데이션 1층 */

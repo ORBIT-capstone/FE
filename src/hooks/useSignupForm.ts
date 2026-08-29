@@ -1,7 +1,13 @@
 import { useState } from "react";
 import type { ChangeEvent, FormEvent } from "react";
+import { useNavigate } from "react-router-dom";
+import { useProfileStore } from "@/stores/profileStore";
 
 export default function useSignupForm() {
+  const navigate = useNavigate();
+  const profile = useProfileStore((state) => state.profile);
+  const setProfile = useProfileStore((state) => state.setProfile);
+
   const [name, setName] = useState("");
   const [emailId, setEmailId] = useState("");
   const [emailDomain, setEmailDomain] = useState("");
@@ -32,6 +38,10 @@ export default function useSignupForm() {
   const handleSubmit = (event: FormEvent<HTMLFormElement>) => {
     event.preventDefault();
     if (!isSubmittable) return;
+
+    // 가입 값 프로필 반영, 성별은 프로필 수정에서 설정
+    setProfile({ ...profile, name, birthDate, email: `${emailId}@${emailDomain}` });
+    navigate("/login");
   };
 
   return {
