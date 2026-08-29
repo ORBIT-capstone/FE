@@ -10,6 +10,8 @@ export interface HomeInfoCardContent {
   id: string;
   title: string;
   description: string;
+  // 카드 클릭 시 이동 경로
+  path?: string;
 }
 
 export const HOME_BANNERS: Record<UserType, HomeBannerContent> = {
@@ -36,6 +38,7 @@ export const HOME_INFO_CARDS: Record<UserType, HomeInfoCardContent[]> = {
   employed: [
     {
       id: "scenario",
+      path: "/payout-scenario",
       title: "수령방식별 시나리오 비교",
       description:
         "정상·조기·일시금·분할 수령에 따른 자산 변화를 비교하고, 나에게 맞는 수령 방식을 확인해보세요.",
