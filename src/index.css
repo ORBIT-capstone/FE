@@ -15,6 +15,11 @@
   --color-muted: #787f9a;
   --color-back-bg: #222639;
   --color-back-icon: #b8bdd6;
+
+  --color-scenario-normal: #de8c98;
+  --color-scenario-early: #8aaff7;
+  --color-scenario-lump: #fdd58c;
+  --color-scenario-split: #8ad5b6;
 }
 
 /* 홈 배너 그라데이션 1층 */

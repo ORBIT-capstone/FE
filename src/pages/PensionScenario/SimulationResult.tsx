@@ -12,7 +12,7 @@ export default function SimulationResult() {
   const result = useSimulationStore((state) => state.result);
 
   // 결과 없이 직접 진입 시 입력 화면 복귀
-  if (!result) return <Navigate to="/simulation" replace />;
+  if (!result) return <Navigate to="/pension-scenario" replace />;
 
   const amountLabel = result.isPensionEligible ? "예상 월 연금액은" : "예상 퇴직일시금은";
   const amount = result.isPensionEligible ? result.monthlyPension : result.lumpSum;
@@ -43,7 +43,7 @@ export default function SimulationResult() {
         <div className="mt-auto flex flex-col gap-3">
           <Button onClick={handleSave}>정보 저장하기</Button>
 
-          <Button tone="secondary" onClick={() => navigate("/simulation/detail")}>
+          <Button tone="secondary" onClick={() => navigate("/pension-scenario/detail")}>
             자세히 보기
           </Button>
         </div>

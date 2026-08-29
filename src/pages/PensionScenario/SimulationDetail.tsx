@@ -1,7 +1,7 @@
 import { Navigate } from "react-router-dom";
 import infoIcon from "@/assets/icons/infoIcon.svg";
 import PageHeader from "@/components/common/header/PageHeader";
-import DetailCard from "@/components/Simulation/DetailCard";
+import DetailCard from "@/components/PensionScenario/DetailCard";
 import { useSimulationStore } from "@/stores/simulationStore";
 import { formatManWon, formatServicePeriod } from "@/utils/format";
 
@@ -9,7 +9,7 @@ export default function SimulationDetail() {
   const result = useSimulationStore((state) => state.result);
 
   // 결과 없이 직접 진입 시 입력 화면 복귀
-  if (!result) return <Navigate to="/simulation" replace />;
+  if (!result) return <Navigate to="/pension-scenario" replace />;
 
   // 연금 수급 대상은 일시금 미지급
   const allowanceValue = result.isPensionEligible

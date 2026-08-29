@@ -5,10 +5,12 @@ import Login from "./pages/Login/Login";
 import Mypage from "./pages/Mypage/Mypage";
 import PrivateInfoEdit from "./pages/Mypage/PrivateInfoEdit";
 import ProfileEdit from "./pages/Mypage/ProfileEdit";
+import PayoutScenario from "./pages/PayoutScenario/PayoutScenario";
+import PayoutScenarioResult from "./pages/PayoutScenario/PayoutScenarioResult";
 import Signup from "./pages/Signup/Signup";
-import Simulation from "./pages/Simulation/Simulation";
-import SimulationDetail from "./pages/Simulation/SimulationDetail";
-import SimulationResult from "./pages/Simulation/SimulationResult";
+import Simulation from "./pages/PensionScenario/Simulation";
+import SimulationDetail from "./pages/PensionScenario/SimulationDetail";
+import SimulationResult from "./pages/PensionScenario/SimulationResult";
 
 function App() {
   return (
@@ -26,9 +28,11 @@ function App() {
         <Route path="/signup" element={<Signup />} />
         <Route path="/mypage/profile" element={<ProfileEdit />} />
         <Route path="/mypage/private-info" element={<PrivateInfoEdit />} />
-        <Route path="/simulation" element={<Simulation />} />
-        <Route path="/simulation/result" element={<SimulationResult />} />
-        <Route path="/simulation/detail" element={<SimulationDetail />} />
+        <Route path="/pension-scenario" element={<Simulation />} />
+        <Route path="/pension-scenario/result" element={<SimulationResult />} />
+        <Route path="/pension-scenario/detail" element={<SimulationDetail />} />
+        <Route path="/payout-scenario" element={<PayoutScenario />} />
+        <Route path="/payout-scenario/result" element={<PayoutScenarioResult />} />
       </Routes>
     </BrowserRouter>
   );

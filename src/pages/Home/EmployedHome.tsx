@@ -15,14 +15,19 @@ export default function EmployedHome() {
         title={banner.title}
         descriptions={banner.descriptions}
         buttonLabel={banner.buttonLabel}
-        onButtonClick={() => navigate("/simulation")}
+        onButtonClick={() => navigate("/pension-scenario")}
       />
 
       <h2 className="mt-8 text-sm text-neutral-400">더 알아보기</h2>
 
       <div className="mt-3 flex flex-col gap-3">
         {infoCards.map((card) => (
-          <InfoCard key={card.id} title={card.title} description={card.description} />
+          <InfoCard
+            key={card.id}
+            title={card.title}
+            description={card.description}
+            onClick={card.path ? () => navigate(card.path!) : undefined}
+          />
         ))}
       </div>
     </>

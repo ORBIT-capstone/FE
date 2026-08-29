@@ -36,7 +36,7 @@ export default function useSimulationForm() {
 
     const input = { currentAge, retireAge, monthlyIncome, serviceYears };
     setSimulation(input, calculateSimulation(input));
-    navigate("/simulation/result");
+    navigate("/pension-scenario/result");
   };
 
   return {
