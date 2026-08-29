@@ -31,9 +31,15 @@ export default function ProfileEdit() {
         <PageHeader title="프로필 수정하기" />
 
         <div className="mt-8 flex flex-col gap-6">
-          <Input label="이름" value={name} onChange={handleNameChange} placeholder="이름" />
+          <Input
+            label="이름"
+            variant="dark"
+            value={name}
+            onChange={handleNameChange}
+            placeholder="이름"
+          />
 
-          <BirthDateField value={birthDate} onChange={setBirthDate} />
+          <BirthDateField value={birthDate} onChange={setBirthDate} variant="dark" />
 
           <GenderSelect value={gender} onChange={setGender} />
         </div>
