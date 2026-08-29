@@ -1,6 +1,6 @@
 import Button from "@/components/common/button/Button";
 import Input from "@/components/common/input/Input";
-import BirthDateField from "@/components/Signup/BirthDateField";
+import BirthDateField from "@/components/common/birthDate/BirthDateField";
 import EmailField from "@/components/Signup/EmailField";
 import useSignupForm from "@/hooks/useSignupForm";
 

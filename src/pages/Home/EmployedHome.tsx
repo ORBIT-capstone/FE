@@ -1,5 +1,5 @@
 import HomeBanner from "@/components/Home/HomeBanner";
-import InfoCard from "@/components/Home/InfoCard";
+import InfoCard from "@/components/common/card/InfoCard";
 import { HOME_BANNERS, HOME_INFO_CARDS } from "@/mocks/homeContents";
 
 export default function EmployedHome() {

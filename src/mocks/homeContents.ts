@@ -43,8 +43,7 @@ export const HOME_INFO_CARDS: Record<UserType, HomeInfoCardContent[]> = {
     {
       id: "improvement",
       title: "노후 준비 개선 추천",
-      description:
-        "현재 노후 준비 상태를 진단하고, 필요한 절약 금액과 추가 소득을 확인해보세요.",
+      description: "현재 노후 준비 상태를 진단하고, 필요한 절약 금액과 추가 소득을 확인해보세요.",
     },
   ],
   retired: [
@@ -57,8 +56,7 @@ export const HOME_INFO_CARDS: Record<UserType, HomeInfoCardContent[]> = {
     {
       id: "improvement",
       title: "노후 준비 개선 추천",
-      description:
-        "현재 노후 준비 상태를 진단하고, 필요한 절약 금액과 추가 소득을 확인해보세요.",
+      description: "현재 노후 준비 상태를 진단하고, 필요한 절약 금액과 추가 소득을 확인해보세요.",
     },
   ],
 };
