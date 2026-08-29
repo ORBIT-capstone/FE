@@ -6,6 +6,9 @@ import Mypage from "./pages/Mypage/Mypage";
 import PrivateInfoEdit from "./pages/Mypage/PrivateInfoEdit";
 import ProfileEdit from "./pages/Mypage/ProfileEdit";
 import Signup from "./pages/Signup/Signup";
+import Simulation from "./pages/Simulation/Simulation";
+import SimulationDetail from "./pages/Simulation/SimulationDetail";
+import SimulationResult from "./pages/Simulation/SimulationResult";
 
 function App() {
   return (
@@ -23,6 +26,9 @@ function App() {
         <Route path="/signup" element={<Signup />} />
         <Route path="/mypage/profile" element={<ProfileEdit />} />
         <Route path="/mypage/private-info" element={<PrivateInfoEdit />} />
+        <Route path="/simulation" element={<Simulation />} />
+        <Route path="/simulation/result" element={<SimulationResult />} />
+        <Route path="/simulation/detail" element={<SimulationDetail />} />
       </Routes>
     </BrowserRouter>
   );
