@@ -1,8 +1,10 @@
+import { useNavigate } from "react-router-dom";
 import HomeBanner from "@/components/Home/HomeBanner";
 import InfoCard from "@/components/common/card/InfoCard";
 import { HOME_BANNERS, HOME_INFO_CARDS } from "@/mocks/homeContents";
 
 export default function RetiredHome() {
+  const navigate = useNavigate();
   const banner = HOME_BANNERS.retired;
   const infoCards = HOME_INFO_CARDS.retired;
 
@@ -13,6 +15,7 @@ export default function RetiredHome() {
         title={banner.title}
         descriptions={banner.descriptions}
         buttonLabel={banner.buttonLabel}
+        onButtonClick={() => navigate("/diagnosis")}
       />
 
       <h2 className="mt-8 text-sm text-neutral-400">더 알아보기</h2>

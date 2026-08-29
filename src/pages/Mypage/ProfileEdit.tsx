@@ -3,7 +3,7 @@ import BirthDateField from "@/components/common/birthDate/BirthDateField";
 import Button from "@/components/common/button/Button";
 import PageHeader from "@/components/common/header/PageHeader";
 import Input from "@/components/common/input/Input";
-import GenderSelect from "@/components/Mypage/GenderSelect";
+import GenderSelect from "@/components/common/gender/GenderSelect";
 import useProfileEditForm from "@/hooks/useProfileEditForm";
 
 export default function ProfileEdit() {
