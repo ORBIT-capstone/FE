@@ -1,5 +1,7 @@
 import { BrowserRouter, Routes, Route } from "react-router-dom";
 import RootLayout from "./layout/RootLayout";
+import Diagnosis from "./pages/Diagnosis/Diagnosis";
+import DiagnosisResult from "./pages/Diagnosis/DiagnosisResult";
 import Home from "./pages/Home/Home";
 import Login from "./pages/Login/Login";
 import Mypage from "./pages/Mypage/Mypage";
@@ -33,6 +35,8 @@ function App() {
         <Route path="/pension-scenario/detail" element={<SimulationDetail />} />
         <Route path="/payout-scenario" element={<PayoutScenario />} />
         <Route path="/payout-scenario/result" element={<PayoutScenarioResult />} />
+        <Route path="/diagnosis" element={<Diagnosis />} />
+        <Route path="/diagnosis/result" element={<DiagnosisResult />} />
       </Routes>
     </BrowserRouter>
   );

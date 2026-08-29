@@ -37,3 +37,11 @@
 @utility banner-layer-2 {
   background-image: linear-gradient(to bottom, #9f747a 0%, #111727 100%);
 }
+
+/* 진단 결과 강조 문구 그라데이션 */
+@utility text-gradient-score {
+  background-image: linear-gradient(to right, #de8c98, #de5481);
+  -webkit-background-clip: text;
+  background-clip: text;
+  color: transparent;
+}
