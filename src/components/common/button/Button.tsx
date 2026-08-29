@@ -1,14 +1,24 @@
 import type { ComponentPropsWithoutRef, ReactNode } from "react";
 
+export type ButtonVariant = "default" | "pill";
+
+// 형태별 크기·모서리 값
+const VARIANT_CLASS: Record<ButtonVariant, string> = {
+  default: "h-14 w-full rounded-xl text-base",
+  pill: "h-10 rounded-full px-6 text-sm",
+};
+
 interface ButtonProps extends ComponentPropsWithoutRef<"button"> {
   children: ReactNode;
-  // 크기 지정용, 부모에서 넘기면 기본 크기 대체
+  variant?: ButtonVariant;
+  // 여백 등 추가 클래스
   className?: string;
 }
 
 export default function Button({
   children,
-  className = "h-14 w-full",
+  variant = "default",
+  className = "",
   type = "button",
   disabled = false,
   ...rest
@@ -22,7 +32,7 @@ export default function Button({
     <button
       type={type}
       disabled={disabled}
-      className={`rounded-xl text-base font-bold text-bg-base transition-colors ${className} ${colorClassName}`}
+      className={`inline-flex items-center justify-center gap-2 font-bold text-bg-base transition-colors ${VARIANT_CLASS[variant]} ${colorClassName} ${className}`}
       {...rest}
     >
       {children}

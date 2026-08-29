@@ -72,7 +72,7 @@ export default function Signup() {
             )}
           </div>
 
-          <Button type="submit" disabled={!isSubmittable} className="mt-2 h-14 w-full">
+          <Button type="submit" disabled={!isSubmittable} className="mt-2">
             완료
           </Button>
         </form>

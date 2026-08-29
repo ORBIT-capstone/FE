@@ -5,9 +5,26 @@
   --font-sans: "Pretendard Variable", Pretendard, system-ui, sans-serif;
 
   --color-bg-base: #111727;
+  --color-card: #1a2138;
   --color-title: #f5d9d5;
   --color-btn-disabled: #a8a8a8;
   --color-btn-active: #de8c98;
   --color-btn-pressed: #a16b73;
   --color-field: #fbfbfb;
+}
+
+/* 홈 배너 그라데이션 1층 */
+@utility banner-layer-1 {
+  background-image: linear-gradient(
+    to bottom right,
+    #263253 5%,
+    #304061 24%,
+    #6f5b75 66%,
+    #de8c98 100%
+  );
+}
+
+/* 홈 배너 그라데이션 2층 */
+@utility banner-layer-2 {
+  background-image: linear-gradient(to bottom, #9f747a 0%, #111727 100%);
 }
