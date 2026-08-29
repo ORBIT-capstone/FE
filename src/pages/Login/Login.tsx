@@ -51,7 +51,7 @@ export default function Login() {
             <span className="text-base text-white">Remember me</span>
           </label>
 
-          <Button type="submit" disabled={!isFilled} className="mt-1 h-14 w-full">
+          <Button type="submit" disabled={!isFilled} className="mt-1">
             로그인 하기
           </Button>
         </form>

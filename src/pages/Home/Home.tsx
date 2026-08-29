@@ -1,7 +1,32 @@
+import HomeHeader from "@/components/Home/HomeHeader";
+import StarBackground from "@/components/Home/StarBackground";
+import UserTypeToggle from "@/components/Home/UserTypeToggle";
+import EmployedHome from "@/pages/Home/EmployedHome";
+import RetiredHome from "@/pages/Home/RetiredHome";
+import { useAuthStore } from "@/stores/authStore";
+import { useUserTypeStore } from "@/stores/userTypeStore";
+
 export default function Home() {
+  const nickname = useAuthStore((state) => state.user?.nickname);
+  const userType = useUserTypeStore((state) => state.userType);
+  const setUserType = useUserTypeStore((state) => state.setUserType);
+
   return (
-    <div>
-      <div></div>
+    <div className="relative min-h-dvh w-full overflow-hidden bg-bg-base">
+      <StarBackground />
+
+      <div className="relative mx-auto w-full max-w-97.5 px-7 pb-28">
+        <HomeHeader />
+
+        <h1 className="mt-10 text-2xl font-bold text-white">안녕하세요, {nickname}님</h1>
+        <p className="mt-1.5 text-base text-white">변화하는 미래를 지속적으로 확인해보세요</p>
+
+        <div className="mt-6">
+          <UserTypeToggle value={userType} onChange={setUserType} />
+        </div>
+
+        <div className="mt-6">{userType === "employed" ? <EmployedHome /> : <RetiredHome />}</div>
+      </div>
     </div>
   );
 }
