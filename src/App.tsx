@@ -10,6 +10,9 @@ import PrivateInfoEdit from "./pages/Mypage/PrivateInfoEdit";
 import ProfileEdit from "./pages/Mypage/ProfileEdit";
 import PayoutScenario from "./pages/PayoutScenario/PayoutScenario";
 import PayoutScenarioResult from "./pages/PayoutScenario/PayoutScenarioResult";
+import Reemployment from "./pages/Reemployment/Reemployment";
+import ReemploymentDetail from "./pages/Reemployment/ReemploymentDetail";
+import ReemploymentResult from "./pages/Reemployment/ReemploymentResult";
 import Signup from "./pages/Signup/Signup";
 import Simulation from "./pages/PensionScenario/Simulation";
 import SimulationDetail from "./pages/PensionScenario/SimulationDetail";
@@ -37,6 +40,9 @@ function App() {
         <Route path="/pension-scenario/detail" element={<SimulationDetail />} />
         <Route path="/payout-scenario" element={<PayoutScenario />} />
         <Route path="/payout-scenario/result" element={<PayoutScenarioResult />} />
+        <Route path="/reemployment" element={<Reemployment />} />
+        <Route path="/reemployment/result" element={<ReemploymentResult />} />
+        <Route path="/reemployment/detail" element={<ReemploymentDetail />} />
         <Route path="/diagnosis" element={<Diagnosis />} />
         <Route path="/diagnosis/result" element={<DiagnosisResult />} />
       </Routes>

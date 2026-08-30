@@ -12,12 +12,6 @@ export const SUFFICIENT_SCORE = 70;
 // 연령별 상세 내역 제공 단위
 export const DETAIL_AGE_STEP = 10;
 
-// 자산 변화 그래프 라인 색상
-export const DIAGNOSIS_CHART_COLOR = {
-  asset: "#de8c98",
-  cumulative: "#8b8fd9",
-};
-
 // 화면 확인용 임시 입력값, API 연동 시 제거 대상
 export const MOCK_DIAGNOSIS_INPUT = {
   currentAge: "45",

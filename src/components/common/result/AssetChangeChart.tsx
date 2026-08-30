@@ -8,9 +8,10 @@ import {
   XAxis,
   YAxis,
 } from "recharts";
-import { DIAGNOSIS_CHART_COLOR } from "@/mocks/diagnosis";
 import type { AssetFlowPoint } from "@/utils/diagnosis";
 import { formatNumber } from "@/utils/format";
+import type { ResultTone } from "@/utils/resultTone";
+import { RESULT_TONE } from "@/utils/resultTone";
 
 const AXIS_COLOR = "#787f9a";
 
@@ -18,6 +19,7 @@ interface AssetChangeChartProps {
   data: AssetFlowPoint[];
   // 자산·누적 교차 시점
   crossAge: number | null;
+  tone?: ResultTone;
 }
 
 // 다크 배경용 툴팁
@@ -43,17 +45,16 @@ interface TooltipProps {
   payload?: { dataKey: string; value: number; color: string }[];
 }
 
-export default function AssetChangeChart({ data, crossAge }: AssetChangeChartProps) {
+export default function AssetChangeChart({ data, crossAge, tone = "pink" }: AssetChangeChartProps) {
+  const chartColor = RESULT_TONE[tone].chart;
+
   return (
     <section className="rounded-2xl border border-white/15 bg-card px-4 py-5">
       <div className="flex flex-wrap items-center gap-x-4 gap-y-1">
         <h2 className="text-sm font-bold text-white">예상 자산 변화 (연 단위)</h2>
 
         <span className="flex items-center gap-1 text-xs text-white">
-          <span
-            className="h-0.5 w-5 rounded-full"
-            style={{ backgroundColor: DIAGNOSIS_CHART_COLOR.asset }}
-          />
+          <span className="h-0.5 w-5 rounded-full" style={{ backgroundColor: chartColor.asset }} />
           자산
         </span>
 
@@ -61,7 +62,7 @@ export default function AssetChangeChart({ data, crossAge }: AssetChangeChartPro
           <span
             className="h-0.5 w-5 rounded-full"
             style={{
-              backgroundImage: `repeating-linear-gradient(to right, ${DIAGNOSIS_CHART_COLOR.cumulative} 0 4px, transparent 4px 7px)`,
+              backgroundImage: `repeating-linear-gradient(to right, ${chartColor.cumulative} 0 4px, transparent 4px 7px)`,
             }}
           />
           소득 - 지출(누적)
@@ -101,19 +102,19 @@ export default function AssetChangeChart({ data, crossAge }: AssetChangeChartPro
             <Line
               type="linear"
               dataKey="asset"
-              stroke={DIAGNOSIS_CHART_COLOR.asset}
+              stroke={chartColor.asset}
               strokeWidth={2}
-              dot={{ r: 3, fill: DIAGNOSIS_CHART_COLOR.asset, strokeWidth: 0 }}
+              dot={{ r: 3, fill: chartColor.asset, strokeWidth: 0 }}
               isAnimationActive={false}
             />
 
             <Line
               type="linear"
               dataKey="cumulative"
-              stroke={DIAGNOSIS_CHART_COLOR.cumulative}
+              stroke={chartColor.cumulative}
               strokeWidth={2}
               strokeDasharray="6 4"
-              dot={{ r: 3, fill: DIAGNOSIS_CHART_COLOR.cumulative, strokeWidth: 0 }}
+              dot={{ r: 3, fill: chartColor.cumulative, strokeWidth: 0 }}
               isAnimationActive={false}
             />
           </LineChart>
