@@ -52,6 +52,7 @@ export const HOME_INFO_CARDS: Record<UserType, HomeInfoCardContent[]> = {
   retired: [
     {
       id: "reemployment",
+      path: "/reemployment",
       title: "재취업 연금 감액 계산",
       description:
         "재취업 후 예상 소득에 따른 연금 감액 여부와 실제 받을 수 있는 금액을 간편하게 계산해보세요.",

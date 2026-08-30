@@ -16,6 +16,11 @@
   --color-back-bg: #222639;
   --color-back-icon: #b8bdd6;
 
+  --color-mint: #8ad5b6;
+  --color-mint-pressed: #6bb797;
+  --color-sub-yellow: #fdd58c;
+  --color-sub-yellow-pressed: #d9b476;
+
   --color-scenario-normal: #de8c98;
   --color-scenario-early: #8aaff7;
   --color-scenario-lump: #fdd58c;
@@ -44,4 +49,28 @@
   -webkit-background-clip: text;
   background-clip: text;
   color: transparent;
+}
+
+/* 재취업 감액 결과 강조 문구 그라데이션 */
+@utility text-gradient-score-mint {
+  background-image: linear-gradient(to right, #2cffa8, #8ad5b6);
+  -webkit-background-clip: text;
+  background-clip: text;
+  color: transparent;
+}
+
+/* 중간 단계 강조 문구 그라데이션 */
+@utility text-gradient-score-yellow {
+  background-image: linear-gradient(to right, #ffe9bc, #fdd58c);
+  -webkit-background-clip: text;
+  background-clip: text;
+  color: transparent;
+}
+
+/* 하단 고정 버튼 영역 블러·그림자 */
+@utility fixed-bottom-blur {
+  background-image: linear-gradient(to top, rgba(17, 23, 39, 0.92), rgba(17, 23, 39, 0.5));
+  backdrop-filter: blur(10px);
+  -webkit-backdrop-filter: blur(10px);
+  box-shadow: 0 -8px 24px rgba(17, 23, 39, 0.55);
 }

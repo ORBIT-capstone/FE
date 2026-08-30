@@ -22,7 +22,12 @@ export default function RetiredHome() {
 
       <div className="mt-3 flex flex-col gap-3">
         {infoCards.map((card) => (
-          <InfoCard key={card.id} title={card.title} description={card.description} />
+          <InfoCard
+            key={card.id}
+            title={card.title}
+            description={card.description}
+            onClick={() => card.path && navigate(card.path)}
+          />
         ))}
       </div>
     </>

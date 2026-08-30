@@ -1,5 +1,7 @@
 import type { AgeDetailRow } from "@/utils/diagnosis";
 import { formatNumber } from "@/utils/format";
+import type { ResultTone } from "@/utils/resultTone";
+import { RESULT_TONE } from "@/utils/resultTone";
 
 const COLUMNS = [
   "나이",
@@ -12,9 +14,12 @@ const COLUMNS = [
 
 interface AgeDetailTableProps {
   rows: AgeDetailRow[];
+  tone?: ResultTone;
 }
 
-export default function AgeDetailTable({ rows }: AgeDetailTableProps) {
+export default function AgeDetailTable({ rows, tone = "pink" }: AgeDetailTableProps) {
+  const accentClass = RESULT_TONE[tone].accentClass;
+
   return (
     <section className="rounded-2xl border border-white/15 bg-card px-4 py-5">
       <h2 className="text-sm font-bold text-white">연령별 상세 내역</h2>
@@ -49,7 +54,7 @@ export default function AgeDetailTable({ rows }: AgeDetailTableProps) {
                 </td>
                 <td
                   className={`border border-white/15 px-2 py-2 text-xs ${
-                    row.cumulativeShortage < 0 ? "text-btn-active" : "text-white"
+                    row.cumulativeShortage < 0 ? accentClass : "text-white"
                   }`}
                 >
                   {formatNumber(row.cumulativeShortage)}

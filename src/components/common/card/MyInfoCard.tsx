@@ -6,17 +6,19 @@ export interface MyInfoItem {
 
 interface MyInfoCardProps {
   items: [MyInfoItem, MyInfoItem, MyInfoItem, MyInfoItem];
+  // 수정 버튼 문구
+  editLabel?: string;
   onEditClick: () => void;
 }
 
-export default function MyInfoCard({ items, onEditClick }: MyInfoCardProps) {
+export default function MyInfoCard({ items, editLabel = "수정", onEditClick }: MyInfoCardProps) {
   return (
     <section>
       <div className="flex items-center justify-between">
         <h2 className="text-base font-bold text-white">내 정보</h2>
 
         <button type="button" onClick={onEditClick} className="cursor-pointer text-sm text-white">
-          수정
+          {editLabel}
         </button>
       </div>
 

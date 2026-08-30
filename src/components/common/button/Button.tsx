@@ -1,7 +1,7 @@
 import type { ComponentPropsWithoutRef, ReactNode } from "react";
 
 export type ButtonVariant = "default" | "pill";
-export type ButtonTone = "primary" | "secondary";
+export type ButtonTone = "primary" | "secondary" | "mint" | "yellow";
 
 // 형태별 크기·모서리 값
 const VARIANT_CLASS: Record<ButtonVariant, string> = {
@@ -13,6 +13,8 @@ const VARIANT_CLASS: Record<ButtonVariant, string> = {
 const TONE_CLASS: Record<ButtonTone, string> = {
   primary: "bg-btn-active text-bg-base hover:bg-btn-pressed active:bg-btn-pressed",
   secondary: "border border-muted bg-card text-white hover:bg-back-bg active:bg-back-bg",
+  mint: "bg-mint text-bg-base hover:bg-mint-pressed active:bg-mint-pressed",
+  yellow: "bg-sub-yellow text-bg-base hover:bg-sub-yellow-pressed active:bg-sub-yellow-pressed",
 };
 
 interface ButtonProps extends ComponentPropsWithoutRef<"button"> {

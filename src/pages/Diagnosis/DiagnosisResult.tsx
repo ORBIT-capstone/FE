@@ -1,10 +1,10 @@
 import { Navigate, useNavigate } from "react-router-dom";
 import Button from "@/components/common/button/Button";
 import PageHeader from "@/components/common/header/PageHeader";
-import AgeDetailTable from "@/components/Diagnosis/AgeDetailTable";
-import AssetChangeChart from "@/components/Diagnosis/AssetChangeChart";
-import SummaryCard from "@/components/Diagnosis/SummaryCard";
-import type { SummaryChip } from "@/components/Diagnosis/SummaryCard";
+import AgeDetailTable from "@/components/common/result/AgeDetailTable";
+import AssetChangeChart from "@/components/common/result/AssetChangeChart";
+import SummaryCard from "@/components/common/result/SummaryCard";
+import type { SummaryChip } from "@/components/common/result/SummaryCard";
 import { useDiagnosisStore } from "@/stores/diagnosisStore";
 import { useMyPlanStore } from "@/stores/myPlanStore";
 import type { DiagnosisStatus } from "@/utils/diagnosis";
