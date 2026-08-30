@@ -75,8 +75,7 @@ export default function ReemploymentDetail() {
           재취업 연금 감액 분석 저장하기
         </Button>
 
-        {/* 맞춤 노후 설계 페이지 준비 전 홈 이동 */}
-        <Button tone="yellow" onClick={() => navigate("/")}>
+        <Button tone="yellow" onClick={() => navigate("/retirement-plan")}>
           맞춤 노후 설계가기
         </Button>
       </FixedBottomBar>

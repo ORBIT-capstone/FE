@@ -43,11 +43,6 @@ export const HOME_INFO_CARDS: Record<UserType, HomeInfoCardContent[]> = {
       description:
         "정상·조기·일시금·분할 수령에 따른 자산 변화를 비교하고, 나에게 맞는 수령 방식을 확인해보세요.",
     },
-    {
-      id: "improvement",
-      title: "노후 준비 개선 추천",
-      description: "현재 노후 준비 상태를 진단하고, 필요한 절약 금액과 추가 소득을 확인해보세요.",
-    },
   ],
   retired: [
     {
@@ -58,9 +53,11 @@ export const HOME_INFO_CARDS: Record<UserType, HomeInfoCardContent[]> = {
         "재취업 후 예상 소득에 따른 연금 감액 여부와 실제 받을 수 있는 금액을 간편하게 계산해보세요.",
     },
     {
-      id: "improvement",
-      title: "노후 준비 개선 추천",
-      description: "현재 노후 준비 상태를 진단하고, 필요한 절약 금액과 추가 소득을 확인해보세요.",
+      id: "retirementPlan",
+      path: "/retirement-plan",
+      title: "맞춤형 노후 설계",
+      description:
+        "진단 결과를 바탕으로 추천 유형과 개선안을 확인하고, 나만의 노후 설계를 완성해보세요.",
     },
   ],
 };

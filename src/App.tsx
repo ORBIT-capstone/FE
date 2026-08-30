@@ -13,6 +13,7 @@ import PayoutScenarioResult from "./pages/PayoutScenario/PayoutScenarioResult";
 import Reemployment from "./pages/Reemployment/Reemployment";
 import ReemploymentDetail from "./pages/Reemployment/ReemploymentDetail";
 import ReemploymentResult from "./pages/Reemployment/ReemploymentResult";
+import RetirementPlan from "./pages/RetirementPlan/RetirementPlan";
 import Signup from "./pages/Signup/Signup";
 import Simulation from "./pages/PensionScenario/Simulation";
 import SimulationDetail from "./pages/PensionScenario/SimulationDetail";
@@ -43,6 +44,7 @@ function App() {
         <Route path="/reemployment" element={<Reemployment />} />
         <Route path="/reemployment/result" element={<ReemploymentResult />} />
         <Route path="/reemployment/detail" element={<ReemploymentDetail />} />
+        <Route path="/retirement-plan" element={<RetirementPlan />} />
         <Route path="/diagnosis" element={<Diagnosis />} />
         <Route path="/diagnosis/result" element={<DiagnosisResult />} />
       </Routes>
