@@ -67,6 +67,11 @@
   color: transparent;
 }
 
+/* 맞춤 노후 설계 추천 유형 카드 그라데이션 */
+@utility bg-gradient-plan {
+  background-image: linear-gradient(to bottom right, #fdd58c, #f9c051);
+}
+
 /* 하단 고정 버튼 영역 블러·그림자 */
 @utility fixed-bottom-blur {
   background-image: linear-gradient(to top, rgba(17, 23, 39, 0.92), rgba(17, 23, 39, 0.5));
