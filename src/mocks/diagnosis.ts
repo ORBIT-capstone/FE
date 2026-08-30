@@ -17,3 +17,12 @@ export const DIAGNOSIS_CHART_COLOR = {
   asset: "#de8c98",
   cumulative: "#8b8fd9",
 };
+
+// 화면 확인용 임시 입력값, API 연동 시 제거 대상
+export const MOCK_DIAGNOSIS_INPUT = {
+  currentAge: "45",
+  monthlyExpense: "180",
+  monthlyPension: "250",
+  assets: "10000",
+  gender: "female" as const,
+};

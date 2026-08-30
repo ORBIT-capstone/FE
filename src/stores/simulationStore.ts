@@ -1,5 +1,7 @@
 import { create } from "zustand";
+import { MOCK_SIMULATION_INPUT } from "@/mocks/simulation";
 import type { SimulationInput, SimulationResult } from "@/utils/simulation";
+import { calculateSimulation } from "@/utils/simulation";
 
 interface SimulationState {
   input: SimulationInput | null;
@@ -10,8 +12,9 @@ interface SimulationState {
 
 // 입력 → 결과 → 상세로 이어지는 전역 상태
 export const useSimulationStore = create<SimulationState>((set) => ({
-  input: null,
-  result: null,
+  // 화면 확인용 임시 주입, API 연동 시 null 로 변경
+  input: MOCK_SIMULATION_INPUT,
+  result: calculateSimulation(MOCK_SIMULATION_INPUT),
   setSimulation: (input, result) => set({ input, result }),
   clearSimulation: () => set({ input: null, result: null }),
 }));

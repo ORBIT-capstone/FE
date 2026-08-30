@@ -6,6 +6,7 @@ import AssetChangeChart from "@/components/Diagnosis/AssetChangeChart";
 import SummaryCard from "@/components/Diagnosis/SummaryCard";
 import type { SummaryChip } from "@/components/Diagnosis/SummaryCard";
 import { useDiagnosisStore } from "@/stores/diagnosisStore";
+import { useMyPlanStore } from "@/stores/myPlanStore";
 import type { DiagnosisStatus } from "@/utils/diagnosis";
 import { findCrossAge } from "@/utils/diagnosis";
 import { formatNumber } from "@/utils/format";
@@ -34,6 +35,7 @@ const STATUS_TEXT: Record<
 export default function DiagnosisResult() {
   const navigate = useNavigate();
   const result = useDiagnosisStore((state) => state.result);
+  const savePlan = useMyPlanStore((state) => state.savePlan);
 
   // 결과 없이 직접 진입 시 입력 화면 복귀
   if (!result) return <Navigate to="/diagnosis" replace />;
@@ -59,8 +61,9 @@ export default function DiagnosisResult() {
     { label: "진단 상태", value: statusText.code, isEmphasis: true },
   ];
 
-  // 저장 후 홈 복귀 처리, 추후 API 저장 연결 지점
+  // 마이플랜 내역 저장 후 홈 복귀 처리, 추후 API 저장 연결 지점
   const handleSave = () => {
+    savePlan("diagnosis");
     navigate("/");
   };
 

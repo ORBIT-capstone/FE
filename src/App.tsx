@@ -5,6 +5,7 @@ import DiagnosisResult from "./pages/Diagnosis/DiagnosisResult";
 import Home from "./pages/Home/Home";
 import Login from "./pages/Login/Login";
 import Mypage from "./pages/Mypage/Mypage";
+import Myplan from "./pages/Mypage/Myplan";
 import PrivateInfoEdit from "./pages/Mypage/PrivateInfoEdit";
 import ProfileEdit from "./pages/Mypage/ProfileEdit";
 import PayoutScenario from "./pages/PayoutScenario/PayoutScenario";
@@ -23,6 +24,7 @@ function App() {
           <Route path="/" element={<Home />} />
           <Route path="/add" element={<></>} />
           <Route path="/mypage" element={<Mypage />} />
+          <Route path="/mypage/plan" element={<Myplan />} />
         </Route>
 
         {/* 전역 레이아웃 미적용 화면 */}

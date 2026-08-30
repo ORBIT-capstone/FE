@@ -26,8 +26,11 @@ export default function Mypage() {
             onClick={() => navigate("/mypage/private-info")}
           />
 
-          {/* 마이플랜 화면 미구현 상태 */}
-          <InfoCard icon={<img src={myPlanIcon} alt="" className="size-7" />} title="마이플랜" />
+          <InfoCard
+            icon={<img src={myPlanIcon} alt="" className="size-7" />}
+            title="마이플랜"
+            onClick={() => navigate("/mypage/plan")}
+          />
         </div>
       </div>
     </div>

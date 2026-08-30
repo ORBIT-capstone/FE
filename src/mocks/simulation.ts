@@ -8,3 +8,11 @@ export const SIMULATION_FACTORS = {
   lumpSumRate: 1.2,
   allowanceRate: 0.1,
 };
+
+// 화면 확인용 임시 입력값, API 연동 시 제거 대상
+export const MOCK_SIMULATION_INPUT = {
+  currentAge: "45",
+  retireAge: "62",
+  monthlyIncome: "3800000",
+  serviceYears: "8",
+};

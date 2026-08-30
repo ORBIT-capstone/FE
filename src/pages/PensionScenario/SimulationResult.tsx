@@ -3,6 +3,7 @@ import astronaut from "@/assets/images/astronut2.svg";
 import Button from "@/components/common/button/Button";
 import PageHeader from "@/components/common/header/PageHeader";
 import { useAuthStore } from "@/stores/authStore";
+import { useMyPlanStore } from "@/stores/myPlanStore";
 import { useSimulationStore } from "@/stores/simulationStore";
 import { formatNumber } from "@/utils/format";
 
@@ -10,6 +11,7 @@ export default function SimulationResult() {
   const navigate = useNavigate();
   const nickname = useAuthStore((state) => state.user?.nickname);
   const result = useSimulationStore((state) => state.result);
+  const savePlan = useMyPlanStore((state) => state.savePlan);
 
   // 결과 없이 직접 진입 시 입력 화면 복귀
   if (!result) return <Navigate to="/pension-scenario" replace />;
@@ -17,8 +19,9 @@ export default function SimulationResult() {
   const amountLabel = result.isPensionEligible ? "예상 월 연금액은" : "예상 퇴직일시금은";
   const amount = result.isPensionEligible ? result.monthlyPension : result.lumpSum;
 
-  // 저장 후 홈 복귀 처리, 추후 API 저장 연결 지점
+  // 마이플랜 내역 저장 후 홈 복귀 처리, 추후 API 저장 연결 지점
   const handleSave = () => {
+    savePlan("pensionSimulation");
     navigate("/");
   };
 
