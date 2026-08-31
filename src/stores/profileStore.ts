@@ -1,27 +1,19 @@
 import { create } from "zustand";
-import { MOCK_PRIVATE_INFO } from "@/mocks/profile";
-
-export interface PrivateInfo {
-  // 보유 자산
-  assets: string;
-  // 월 지출액
-  monthlyExpense: string;
-  // 세전 월 소득
-  monthlyIncome: string;
-  // 현재까지 근속연수
-  serviceYears: string;
-  // 월 연금 수령액
-  monthlyPension: string;
-}
+import { persist } from "zustand/middleware";
 
 interface ProfileState {
-  privateInfo: PrivateInfo;
-  setPrivateInfo: (privateInfo: PrivateInfo) => void;
+  // 세전 월 소득, 회원 정보 API 미지원으로 로컬 보관
+  monthlyIncome: string;
+  setMonthlyIncome: (monthlyIncome: string) => void;
 }
 
-// 개인정보 전역 상태, 연동 API 추가 전까지 유지
-export const useProfileStore = create<ProfileState>((set) => ({
-  // 화면 확인용 임시 주입, API 연동 시 빈 값으로 변경
-  privateInfo: MOCK_PRIVATE_INFO,
-  setPrivateInfo: (privateInfo) => set({ privateInfo }),
-}));
+// 서버에 저장할 수 없는 개인정보 항목 전역 상태
+export const useProfileStore = create<ProfileState>()(
+  persist(
+    (set) => ({
+      monthlyIncome: "",
+      setMonthlyIncome: (monthlyIncome) => set({ monthlyIncome }),
+    }),
+    { name: "orbit-profile" },
+  ),
+);

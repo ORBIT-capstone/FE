@@ -2,9 +2,9 @@ import { useState } from "react";
 import type { ChangeEvent } from "react";
 import { useNavigate } from "react-router-dom";
 import { getApiErrorMessage } from "@/api/apiError";
+import usePrivateInfo from "@/hooks/usePrivateInfo";
 import useReductionMutation from "@/queries/reemployment/useReductionMutation";
 import { useAuthStore } from "@/stores/authStore";
-import { useProfileStore } from "@/stores/profileStore";
 import { useReemploymentStore } from "@/stores/reemploymentStore";
 import { calculateAge } from "@/utils/age";
 import { formatNumber } from "@/utils/format";
@@ -15,7 +15,7 @@ const toNumericValue = (value: string) => value.replace(/[^0-9]/g, "");
 export default function useReemploymentForm() {
   const navigate = useNavigate();
   const user = useAuthStore((state) => state.user);
-  const privateInfo = useProfileStore((state) => state.privateInfo);
+  const { privateInfo } = usePrivateInfo();
   const setReemployment = useReemploymentStore((state) => state.setReemployment);
   const { mutate: reductionMutate, isPending } = useReductionMutation();
 

@@ -47,6 +47,14 @@ function App() {
         <Route path="/retirement-plan" element={<RetirementPlan />} />
         <Route path="/diagnosis" element={<Diagnosis />} />
         <Route path="/diagnosis/result" element={<DiagnosisResult />} />
+
+        {/* 마이플랜에서 진입하는 저장 결과 화면 */}
+        <Route path="/pension-scenario/result/:id" element={<SimulationResult />} />
+        <Route path="/pension-scenario/detail/:id" element={<SimulationDetail />} />
+        <Route path="/payout-scenario/result/:id" element={<PayoutScenarioResult />} />
+        <Route path="/reemployment/detail/:id" element={<ReemploymentDetail />} />
+        <Route path="/retirement-plan/:id" element={<RetirementPlan />} />
+        <Route path="/diagnosis/result/:id" element={<DiagnosisResult />} />
       </Routes>
     </BrowserRouter>
   );

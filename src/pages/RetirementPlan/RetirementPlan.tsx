@@ -1,5 +1,6 @@
 import { useState } from "react";
-import { useNavigate } from "react-router-dom";
+import { useNavigate, useParams } from "react-router-dom";
+import { getApiErrorMessage } from "@/api/apiError";
 import ageIcon from "@/assets/icons/ageIcon.svg";
 import assetIcon from "@/assets/icons/assetIcon.svg";
 import BadIcon from "@/assets/icons/BadIcon.svg";
@@ -30,7 +31,8 @@ import {
   RECOMMEND_TYPE_TEXT,
   STATUS_TEXT,
 } from "@/mocks/retirementPlan";
-import { useMyPlanStore } from "@/stores/myPlanStore";
+import useDiagnosisDetailQuery from "@/queries/diagnoses/useDiagnosisDetailQuery";
+import useSaveDiagnosisMutation from "@/queries/diagnoses/useSaveDiagnosisMutation";
 import type { ReadinessStatus } from "@/types/diagnosis";
 import type { RecommendationType } from "@/types/retirementPlan";
 import { formatWon } from "@/utils/format";
@@ -52,25 +54,55 @@ const STATUS_ICON: Record<ReadinessStatus, string> = {
 
 export default function RetirementPlan() {
   const navigate = useNavigate();
-  const { plan, baseInfo, hasRequiredInfo, isPending, errorMessage } = useRetirementPlan();
-  const savePlan = useMyPlanStore((state) => state.savePlan);
+  const { id } = useParams();
+
+  // 마이플랜 진입이면 저장된 결과를 조회하고 재계산하지 않음
+  const savedId = Number(id);
+  const isSaved = id !== undefined && Number.isFinite(savedId);
+
+  const {
+    data: savedPlan,
+    isLoading: isSavedLoading,
+    error: savedError,
+  } = useDiagnosisDetailQuery("RETIREMENT_RECOMMENDATION", isSaved ? savedId : null);
+
+  const {
+    plan: calculatedPlan,
+    baseInfo,
+    hasRequiredInfo,
+    isPending,
+    errorMessage,
+  } = useRetirementPlan(isSaved);
+
+  const {
+    mutate: saveMutate,
+    isPending: isSaving,
+    error: saveError,
+  } = useSaveDiagnosisMutation("RETIREMENT_RECOMMENDATION");
 
   // 연령별 예상 내역 펼침 여부
   const [isDetailOpen, setIsDetailOpen] = useState(false);
 
-  // 마이플랜 내역 저장 후 홈 복귀 처리, 추후 API 저장 연결 지점
+  const plan = isSaved ? (savedPlan?.result ?? null) : calculatedPlan;
+
+  // 노후 설계 결과 저장 후 홈 복귀 처리
   const handleSave = () => {
-    savePlan("retirementPlan");
-    navigate("/");
+    if (!plan) return;
+
+    saveMutate(plan, { onSuccess: () => navigate("/") });
   };
 
   // 개인정보가 없거나 요청 실패·로딩 중 안내 화면
   if (!plan) {
-    const guideMessage = !hasRequiredInfo
-      ? "개인정보를 먼저 등록하시면\n맞춤 설계를 확인하실 수 있습니다"
-      : isPending
-        ? "맞춤 설계를 불러오는 중입니다"
-        : errorMessage || "맞춤 설계를 불러오지 못했습니다";
+    const guideMessage = isSaved
+      ? isSavedLoading
+        ? "저장된 설계를 불러오는 중입니다"
+        : getApiErrorMessage(savedError, "저장된 설계를 찾을 수 없습니다")
+      : !hasRequiredInfo
+        ? "개인정보를 먼저 등록하시면\n맞춤 설계를 확인하실 수 있습니다"
+        : isPending
+          ? "맞춤 설계를 불러오는 중입니다"
+          : errorMessage || "맞춤 설계를 불러오지 못했습니다";
 
     return (
       <div className="min-h-dvh w-full bg-bg-base">
@@ -82,7 +114,7 @@ export default function RetirementPlan() {
           </p>
         </div>
 
-        {!isPending && (
+        {!isSaved && !isPending && (
           <FixedBottomBar>
             <Button tone="yellow" onClick={() => navigate("/mypage/private-info")}>
               개인정보 등록하러 가기
@@ -201,13 +233,22 @@ export default function RetirementPlan() {
             )}
           </section>
         </div>
+
+        {saveError && (
+          <p className="mt-6 text-sm text-btn-active">
+            {getApiErrorMessage(saveError, "저장에 실패했습니다")}
+          </p>
+        )}
       </div>
 
-      <FixedBottomBar>
-        <Button tone="yellow" onClick={handleSave}>
-          나의 노후 설계 저장하기
-        </Button>
-      </FixedBottomBar>
+      {/* 저장된 결과 조회 시에는 저장 버튼 미노출 */}
+      {!isSaved && (
+        <FixedBottomBar>
+          <Button tone="yellow" onClick={handleSave} disabled={isSaving}>
+            {isSaving ? "저장 중..." : "나의 노후 설계 저장하기"}
+          </Button>
+        </FixedBottomBar>
+      )}
     </div>
   );
 }

@@ -1,13 +1,14 @@
 import { useEffect, useRef, useState } from "react";
 import { getApiErrorMessage } from "@/api/apiError";
+import usePrivateInfo from "@/hooks/usePrivateInfo";
 import useRecommendationsMutation from "@/queries/retirementPlan/useRecommendationsMutation";
 import { useAuthStore } from "@/stores/authStore";
-import { useProfileStore } from "@/stores/profileStore";
 import { calculateAge } from "@/utils/age";
 
-export default function useRetirementPlan() {
+// 저장된 결과를 볼 때는 재계산하지 않음
+export default function useRetirementPlan(isSkipped = false) {
   const user = useAuthStore((state) => state.user);
-  const privateInfo = useProfileStore((state) => state.privateInfo);
+  const { privateInfo, isLoading } = usePrivateInfo();
   const { mutate: recommendMutate, data: plan, isPending } = useRecommendationsMutation();
 
   const [errorMessage, setErrorMessage] = useState("");
@@ -24,9 +25,9 @@ export default function useRetirementPlan() {
 
   const hasRequiredInfo = baseInfo.currentAge > 0 && baseInfo.monthlyExpense > 0;
 
-  // 진입 시 한 번만 추천 요청
+  // 개인정보 조회 후 한 번만 추천 요청
   useEffect(() => {
-    if (!hasRequiredInfo || requestedRef.current) return;
+    if (isSkipped || isLoading || !hasRequiredInfo || requestedRef.current) return;
 
     requestedRef.current = true;
 
@@ -49,5 +50,11 @@ export default function useRetirementPlan() {
     );
   });
 
-  return { plan, baseInfo, hasRequiredInfo, isPending, errorMessage };
+  return {
+    plan: plan ?? null,
+    baseInfo,
+    hasRequiredInfo,
+    isPending: isPending || isLoading,
+    errorMessage,
+  };
 }

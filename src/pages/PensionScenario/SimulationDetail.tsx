@@ -1,13 +1,32 @@
 import { Navigate } from "react-router-dom";
 import infoIcon from "@/assets/icons/infoIcon.svg";
 import PageHeader from "@/components/common/header/PageHeader";
+import ResultPlaceholder from "@/components/common/result/ResultPlaceholder";
 import DetailCard from "@/components/PensionScenario/DetailCard";
+import useDiagnosisResult from "@/hooks/useDiagnosisResult";
 import { useSimulationStore } from "@/stores/simulationStore";
 import { formatWon } from "@/utils/format";
 import { isPensionEligible } from "@/utils/simulation";
 
+const PAGE_TITLE = "연금 시뮬레이션 자세히보기";
+
 export default function SimulationDetail() {
-  const result = useSimulationStore((state) => state.result);
+  const calculatedResult = useSimulationStore((state) => state.result);
+  const { result, isSaved, isLoading, errorMessage } = useDiagnosisResult(
+    "EMPLOYEE_PENSION",
+    calculatedResult,
+  );
+
+  if (isLoading) return <ResultPlaceholder title={PAGE_TITLE} message="결과를 불러오는 중입니다" />;
+
+  if (isSaved && !result) {
+    return (
+      <ResultPlaceholder
+        title={PAGE_TITLE}
+        message={errorMessage || "저장된 결과를 찾을 수 없습니다"}
+      />
+    );
+  }
 
   // 결과 없이 직접 진입 시 입력 화면 복귀
   if (!result) return <Navigate to="/pension-scenario" replace />;
@@ -20,7 +39,7 @@ export default function SimulationDetail() {
   return (
     <div className="min-h-dvh w-full bg-bg-base">
       <div className="mx-auto w-full max-w-97.5 px-7 pb-10">
-        <PageHeader title="연금 시뮬레이션 자세히보기" />
+        <PageHeader title={PAGE_TITLE} />
 
         {!isEligible && (
           <p className="mt-4 text-sm leading-relaxed text-muted">

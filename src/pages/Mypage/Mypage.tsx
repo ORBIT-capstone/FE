@@ -12,7 +12,6 @@ import useDeleteAccountMutation from "@/queries/auth/useDeleteAccountMutation";
 import useLogoutMutation from "@/queries/auth/useLogoutMutation";
 import { useAuthStore } from "@/stores/authStore";
 import { useDiagnosisStore } from "@/stores/diagnosisStore";
-import { useMyPlanStore } from "@/stores/myPlanStore";
 import { useReemploymentStore } from "@/stores/reemploymentStore";
 
 // 회원탈퇴 안내 문구
@@ -22,7 +21,6 @@ const WITHDRAW_DESCRIPTION =
 export default function Mypage() {
   const navigate = useNavigate();
   const user = useAuthStore((state) => state.user);
-  const clearPlans = useMyPlanStore((state) => state.clearPlans);
   const clearDiagnosis = useDiagnosisStore((state) => state.clearDiagnosis);
   const clearReemployment = useReemploymentStore((state) => state.clearReemployment);
   const { isLoggedIn, goLogin } = useLoginGuard();
@@ -32,9 +30,8 @@ export default function Mypage() {
   const [isLogoutOpen, setIsLogoutOpen] = useState(false);
   const [isWithdrawOpen, setIsWithdrawOpen] = useState(false);
 
-  // 저장된 진단 내역 초기화
+  // 계산 결과 전역 상태 초기화
   const clearSavedData = () => {
-    clearPlans();
     clearDiagnosis();
     clearReemployment();
   };
