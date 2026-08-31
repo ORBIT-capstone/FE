@@ -12,6 +12,8 @@ export default function Diagnosis() {
     assets,
     gender,
     isSubmittable,
+    isPending,
+    errorMessage,
     handleCurrentAgeChange,
     handleMonthlyExpenseChange,
     handleMonthlyPensionChange,
@@ -41,7 +43,7 @@ export default function Diagnosis() {
 
           <Input
             label="월 생활비"
-            unit="만원"
+            unit="원"
             variant="dark"
             inputMode="numeric"
             value={monthlyExpense}
@@ -50,17 +52,17 @@ export default function Diagnosis() {
 
           <Input
             label="월 연금 수령액"
-            unit="만원"
+            unit="원"
             variant="dark"
             inputMode="numeric"
-            placeholder="예 ) 1,800,000"
+            placeholder="원 단위로 입력해주세요"
             value={monthlyPension}
             onChange={handleMonthlyPensionChange}
           />
 
           <Input
             label="보유 자산"
-            unit="만원"
+            unit="원"
             variant="dark"
             inputMode="numeric"
             value={assets}
@@ -70,8 +72,12 @@ export default function Diagnosis() {
           <GenderSelect value={gender} onChange={setGender} />
         </div>
 
+        {errorMessage && (
+          <p className="mt-6 text-sm whitespace-pre-line text-btn-active">{errorMessage}</p>
+        )}
+
         <Button onClick={handleSubmit} disabled={!isSubmittable} className="mt-auto">
-          진단하기
+          {isPending ? "진단 중..." : "진단하기"}
         </Button>
       </div>
     </div>

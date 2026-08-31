@@ -1,107 +1,69 @@
-import { DETAIL_AGE_STEP, LIFE_EXPECTANCY, SUFFICIENT_SCORE } from "@/mocks/diagnosis";
-import type { Gender } from "@/types/auth";
+import { DETAIL_AGE_STEP, SUFFICIENT_SCORE } from "@/mocks/diagnosis";
+import type {
+  AgeDetailRow,
+  AssetFlowPoint,
+  DiagnosisInput,
+  RetirementDiagnosisRequest,
+  RetirementDiagnosisResponse,
+} from "@/types/diagnosis";
 
-export type DiagnosisStatus = "sufficient" | "insufficient";
+const MAN_WON = 10_000;
 
-export interface DiagnosisInput {
-  // 현재 나이
-  currentAge: string;
-  // 월 생활비, 만원 단위
-  monthlyExpense: string;
-  // 월 연금 수령액, 만원 단위
-  monthlyPension: string;
-  // 보유 자산, 만원 단위
-  assets: string;
-  gender: Gender;
-}
+// 원 단위 응답을 만원 단위 표기값으로 변환
+const toManWon = (amount: number) => Math.round(amount / MAN_WON);
 
-export interface AssetFlowPoint {
-  age: number;
-  // 잔여 자산, 만원 단위
-  asset: number;
-  // 소득 - 지출 누적, 만원 단위
-  cumulative: number;
-}
+// 진단 요청 데이터 변환 처리
+export const buildDiagnosisRequest = (input: DiagnosisInput): RetirementDiagnosisRequest => ({
+  // 현재 나이 매핑
+  current_age: Number(input.currentAge),
+  // 월 생활비 매핑, 원 단위
+  monthly_expenses: Number(input.monthlyExpense),
+  // 월 연금 수령액 매핑, 원 단위
+  monthly_pension: Number(input.monthlyPension),
+  // 보유 자산 매핑, 원 단위
+  asset: Number(input.assets),
+  gender: input.gender,
+});
 
-export interface AgeDetailRow {
-  age: number;
-  annualIncome: number;
-  annualExpense: number;
-  annualShortage: number;
-  cumulativeShortage: number;
-  asset: number;
-}
+// 자산이 버티는 기간 비율 기반 점수, 응답에 없어 프론트에서 산출
+export const getDiagnosisScore = (result: RetirementDiagnosisResponse) => {
+  const survivedYears = (result.depletion_age ?? result.target_age) - result.current_age;
+  const targetYears = Math.max(result.target_age - result.current_age, 1);
 
-export interface DiagnosisResult {
-  score: number;
-  status: DiagnosisStatus;
-  lifeExpectancy: number;
-  // 고갈되지 않으면 null
-  depletionAge: number | null;
-  // 월 부족 금액, 만원 단위
-  monthlyShortage: number;
-  assetFlow: AssetFlowPoint[];
-  ageDetails: AgeDetailRow[];
-}
-
-// 입력값 기반 임시 진단, API 연동 시 이 함수만 교체 대상
-export const calculateDiagnosis = (input: DiagnosisInput): DiagnosisResult => {
-  const currentAge = Number(input.currentAge);
-  const monthlyExpense = Number(input.monthlyExpense);
-  const monthlyPension = Number(input.monthlyPension);
-  const initialAsset = Number(input.assets);
-
-  const lifeExpectancy = LIFE_EXPECTANCY[input.gender];
-  const annualIncome = monthlyPension * 12;
-  const annualExpense = monthlyExpense * 12;
-  const annualShortage = annualIncome - annualExpense;
-  const monthlyShortage = Math.max(monthlyExpense - monthlyPension, 0);
-
-  const assetFlow: AssetFlowPoint[] = [];
-  const ageDetails: AgeDetailRow[] = [];
-
-  let asset = initialAsset;
-  let cumulative = 0;
-  let depletionAge: number | null = null;
-
-  for (let age = currentAge; age <= lifeExpectancy; age += 1) {
-    assetFlow.push({ age, asset: Math.max(asset, 0), cumulative });
-
-    if (asset <= 0 && depletionAge === null) depletionAge = age;
-
-    if ((age - currentAge) % DETAIL_AGE_STEP === 0) {
-      ageDetails.push({
-        age,
-        annualIncome,
-        annualExpense,
-        annualShortage,
-        cumulativeShortage: cumulative,
-        asset: Math.max(Math.round(asset), 0),
-      });
-    }
-
-    asset += annualShortage;
-    cumulative += annualShortage;
-  }
-
-  // 자산이 버티는 기간 비율 기반 점수
-  const survivedYears = (depletionAge ?? lifeExpectancy) - currentAge;
-  const targetYears = Math.max(lifeExpectancy - currentAge, 1);
-  const score = Math.min(Math.round((survivedYears / targetYears) * 100), 100);
-
-  return {
-    score,
-    status: score >= SUFFICIENT_SCORE ? "sufficient" : "insufficient",
-    lifeExpectancy,
-    depletionAge,
-    monthlyShortage,
-    assetFlow,
-    ageDetails,
-  };
+  return Math.min(Math.round((survivedYears / targetYears) * 100), 100);
 };
 
-// 자산과 누적 소득-지출이 교차하는 나이
+// 점수 기준 충분 여부, 상태 문구 분기용
+export const isSufficientScore = (score: number) => score >= SUFFICIENT_SCORE;
+
+// 기대수명 이후 구간 제외
+const getTimeline = (result: RetirementDiagnosisResponse) =>
+  result.timeline.filter((point) => point.age <= result.target_age);
+
+// 자산 변화 그래프용 변환
+export const toAssetFlow = (result: RetirementDiagnosisResponse): AssetFlowPoint[] =>
+  getTimeline(result).map((point) => ({
+    age: point.age,
+    asset: toManWon(point.asset),
+    cumulative: toManWon(point.cumulative_annual_gap),
+  }));
+
+// 연령별 상세 내역용 변환, 10년 단위 추출
+export const toAgeDetailRows = (result: RetirementDiagnosisResponse): AgeDetailRow[] =>
+  getTimeline(result)
+    .filter((point) => (point.age - result.current_age) % DETAIL_AGE_STEP === 0)
+    .map((point) => ({
+      age: point.age,
+      annualIncome: toManWon(point.annual_income),
+      annualExpense: toManWon(point.annual_expense),
+      annualShortage: toManWon(point.annual_gap),
+      cumulativeShortage: toManWon(point.cumulative_annual_gap),
+      asset: toManWon(point.asset),
+    }));
+
+// 자산과 누적 부족액이 교차하는 나이
 export const findCrossAge = (assetFlow: AssetFlowPoint[]) => {
   const crossPoint = assetFlow.find((point) => point.cumulative >= point.asset);
+
   return crossPoint?.age ?? null;
 };

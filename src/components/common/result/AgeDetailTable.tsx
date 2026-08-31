@@ -1,4 +1,4 @@
-import type { AgeDetailRow } from "@/utils/diagnosis";
+import type { AgeDetailRow } from "@/types/diagnosis";
 import { formatNumber } from "@/utils/format";
 import type { ResultTone } from "@/utils/resultTone";
 import { RESULT_TONE } from "@/utils/resultTone";
@@ -7,8 +7,8 @@ const COLUMNS = [
   "나이",
   "연간 소득 (만원)",
   "연간 지출 (만원)",
-  "연간 부족액 (만원)",
-  "누적 부족액 (만원)",
+  "연간 부족액",
+  "누적 부족액",
   "자산 (만원)",
 ];
 
@@ -16,6 +16,12 @@ interface AgeDetailTableProps {
   rows: AgeDetailRow[];
   tone?: ResultTone;
 }
+
+// 부족·충분 여부와 금액 문구
+const toShortageText = (amount: number) =>
+  amount > 0
+    ? `부족(${formatNumber(amount)}만원)`
+    : `충분(${formatNumber(Math.abs(amount))}만원 남음)`;
 
 export default function AgeDetailTable({ rows, tone = "pink" }: AgeDetailTableProps) {
   const accentClass = RESULT_TONE[tone].accentClass;
@@ -49,15 +55,19 @@ export default function AgeDetailTable({ rows, tone = "pink" }: AgeDetailTablePr
                 <td className="border border-white/15 px-2 py-2 text-xs text-white">
                   {formatNumber(row.annualExpense)}
                 </td>
-                <td className="border border-white/15 px-2 py-2 text-xs text-white">
-                  {formatNumber(row.annualShortage)}
-                </td>
                 <td
-                  className={`border border-white/15 px-2 py-2 text-xs ${
-                    row.cumulativeShortage < 0 ? accentClass : "text-white"
+                  className={`border border-white/15 px-2 py-2 text-xs whitespace-nowrap ${
+                    row.annualShortage > 0 ? accentClass : "text-white"
                   }`}
                 >
-                  {formatNumber(row.cumulativeShortage)}
+                  {toShortageText(row.annualShortage)}
+                </td>
+                <td
+                  className={`border border-white/15 px-2 py-2 text-xs whitespace-nowrap ${
+                    row.cumulativeShortage > 0 ? accentClass : "text-white"
+                  }`}
+                >
+                  {toShortageText(row.cumulativeShortage)}
                 </td>
                 <td className="border border-white/15 px-2 py-2 text-xs text-white">
                   {formatNumber(row.asset)}

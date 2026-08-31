@@ -24,11 +24,11 @@ export default function useRetirementPlan() {
     };
   } else if (diagnosisInput && diagnosisResult) {
     base = {
-      currentAge: Number(diagnosisInput.currentAge),
-      targetAge: diagnosisResult.lifeExpectancy,
-      assets: Number(diagnosisInput.assets),
-      monthlyExpense: Number(diagnosisInput.monthlyExpense),
-      monthlyIncome: Number(diagnosisInput.monthlyPension),
+      currentAge: diagnosisResult.current_age,
+      targetAge: diagnosisResult.target_age,
+      assets: Number(diagnosisInput.assets) / MAN_WON,
+      monthlyExpense: Number(diagnosisInput.monthlyExpense) / MAN_WON,
+      monthlyIncome: Number(diagnosisInput.monthlyPension) / MAN_WON,
     };
   }
 

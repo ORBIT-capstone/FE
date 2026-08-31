@@ -7,28 +7,26 @@ import SummaryCard from "@/components/common/result/SummaryCard";
 import type { SummaryChip } from "@/components/common/result/SummaryCard";
 import { useDiagnosisStore } from "@/stores/diagnosisStore";
 import { useMyPlanStore } from "@/stores/myPlanStore";
-import type { DiagnosisStatus } from "@/utils/diagnosis";
-import { findCrossAge } from "@/utils/diagnosis";
-import { formatNumber } from "@/utils/format";
+import type { DiagnosisStatus } from "@/types/diagnosis";
+import { findCrossAge, getDiagnosisScore, toAgeDetailRows, toAssetFlow } from "@/utils/diagnosis";
+import { formatWon } from "@/utils/format";
 
 // 진단 상태별 문구
 const STATUS_TEXT: Record<
   DiagnosisStatus,
-  { label: string; headline: string; description: string; code: string }
+  { label: string; headline: string; description: string }
 > = {
-  sufficient: {
+  SUFFICIENT: {
     label: "충분",
     headline: "충분 단계입니다",
     description:
       "현재 자산과 소득으로\n목표 은퇴 시점까지 안정적인\n생활이 가능할 것으로 예상됩니다",
-    code: "SUFFICIENT",
   },
-  insufficient: {
+  INSUFFICIENT: {
     label: "부족",
     headline: "부족 단계입니다",
     description:
       "현재 자산과 소득으로는\n목표 은퇴 시점까지 생활을\n유지하기 어려울 것으로 예상됩니다",
-    code: "INSUFFICIENT",
   },
 };
 
@@ -41,24 +39,25 @@ export default function DiagnosisResult() {
   if (!result) return <Navigate to="/diagnosis" replace />;
 
   const statusText = STATUS_TEXT[result.status];
+  const assetFlow = toAssetFlow(result);
 
   const chips: SummaryChip[] = [
-    { label: "기대수명", value: `${result.lifeExpectancy}세` },
+    { label: "기대수명", value: `${result.target_age}세` },
     {
       label: "예상 자산 고갈 나이",
-      value: result.depletionAge === null ? "해당없음" : `${result.depletionAge}세`,
+      value: result.depleted && result.depletion_age ? `${result.depletion_age}세` : "해당없음",
     },
     {
       label: "월 부족 금액",
-      value: `${formatNumber(result.monthlyShortage)}만원`,
+      value: result.monthly_gap > 0 ? formatWon(result.monthly_gap) : "해당없음",
       isEmphasis: true,
     },
     {
       label: "자산 고갈 여부",
-      value: result.depletionAge === null ? "고갈되지 않음" : "고갈됨",
+      value: result.depleted ? "고갈됨" : "고갈되지 않음",
       isEmphasis: true,
     },
-    { label: "진단 상태", value: statusText.code, isEmphasis: true },
+    { label: "진단 상태", value: result.status, isEmphasis: true },
   ];
 
   // 마이플랜 내역 저장 후 홈 복귀 처리, 추후 API 저장 연결 지점
@@ -74,16 +73,16 @@ export default function DiagnosisResult() {
 
         <div className="mt-8 flex flex-col gap-6">
           <SummaryCard
-            score={result.score}
+            score={getDiagnosisScore(result)}
             statusLabel={statusText.label}
             headline={statusText.headline}
             description={statusText.description}
             chips={chips}
           />
 
-          <AssetChangeChart data={result.assetFlow} crossAge={findCrossAge(result.assetFlow)} />
+          <AssetChangeChart data={assetFlow} crossAge={findCrossAge(assetFlow)} />
 
-          <AgeDetailTable rows={result.ageDetails} />
+          <AgeDetailTable rows={toAgeDetailRows(result)} />
         </div>
 
         <Button onClick={handleSave} className="mt-8">
