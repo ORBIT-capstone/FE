@@ -7,7 +7,7 @@ import {
   HYBRID_SAVING_RATE,
   SAVING_NEED_RATE,
 } from "@/mocks/retirementPlan";
-import type { AgeDetailRow } from "@/utils/diagnosis";
+import type { AgeDetailRow } from "@/types/diagnosis";
 
 const MAN_WON = 10_000;
 
@@ -128,8 +128,8 @@ export const calculateRetirementPlan = (base: RetirementPlanBase): RetirementPla
         age,
         annualIncome,
         annualExpense,
-        annualShortage: annualGap,
-        cumulativeShortage: cumulativeGap,
+        annualShortage: -annualGap,
+        cumulativeShortage: -cumulativeGap,
         asset: Math.max(Math.round(asset), 0),
       });
     }

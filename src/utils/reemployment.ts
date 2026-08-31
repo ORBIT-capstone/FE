@@ -7,7 +7,7 @@ import {
   REEMPLOYMENT_YEARS,
 } from "@/mocks/reemployment";
 import type { Gender } from "@/types/auth";
-import type { AgeDetailRow, AssetFlowPoint } from "@/utils/diagnosis";
+import type { AgeDetailRow, AssetFlowPoint } from "@/types/diagnosis";
 
 const MAN_WON = 10_000;
 
@@ -162,7 +162,7 @@ export const toAssetFlow = (result: ReemploymentResult): AssetFlowPoint[] =>
   result.timeline.map((point) => ({
     age: point.age,
     asset: point.asset,
-    cumulative: point.cumulative_annual_gap,
+    cumulative: -point.cumulative_annual_gap,
   }));
 
 // 연령별 상세 내역용 변환, 10년 단위 추출
@@ -173,7 +173,7 @@ export const toAgeDetailRows = (result: ReemploymentResult): AgeDetailRow[] =>
       age: point.age,
       annualIncome: point.annual_income,
       annualExpense: point.annual_expense,
-      annualShortage: point.annual_gap,
-      cumulativeShortage: point.cumulative_annual_gap,
+      annualShortage: -point.annual_gap,
+      cumulativeShortage: -point.cumulative_annual_gap,
       asset: point.asset,
     }));

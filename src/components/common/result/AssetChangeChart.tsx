@@ -8,7 +8,7 @@ import {
   XAxis,
   YAxis,
 } from "recharts";
-import type { AssetFlowPoint } from "@/utils/diagnosis";
+import type { AssetFlowPoint } from "@/types/diagnosis";
 import { formatNumber } from "@/utils/format";
 import type { ResultTone } from "@/utils/resultTone";
 import { RESULT_TONE } from "@/utils/resultTone";
@@ -32,7 +32,7 @@ function ChartTooltip({ active, payload, label }: TooltipProps) {
       {payload.map((item) => (
         <p key={item.dataKey} className="mt-1 flex items-center gap-1">
           <span className="size-1.5 rounded-full" style={{ backgroundColor: item.color }} />
-          {item.dataKey === "asset" ? "자산" : "누적"} {formatNumber(item.value)}만원
+          {item.dataKey === "asset" ? "자산" : "누적 부족액"} {formatNumber(item.value)}만원
         </p>
       ))}
     </div>
@@ -65,7 +65,7 @@ export default function AssetChangeChart({ data, crossAge, tone = "pink" }: Asse
               backgroundImage: `repeating-linear-gradient(to right, ${chartColor.cumulative} 0 4px, transparent 4px 7px)`,
             }}
           />
-          소득 - 지출(누적)
+          누적 부족액
         </span>
       </div>
 
