@@ -19,9 +19,6 @@ export const MAX_REDUCTION_RATE = 0.5;
 // 재취업 소득 유지 가정 기간, 이후에는 감액 없이 전액 수령
 export const REEMPLOYMENT_YEARS = 5;
 
-// 기존 월 연금 수령액, 마이페이지 저장값 연동 전 임시값
-export const MOCK_MONTHLY_PENSION = 1_500_000;
-
 // 중간 단계 기준 점수, 이 아래는 부족 단계
 export const MODERATE_SCORE = 40;
 

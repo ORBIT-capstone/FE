@@ -1,7 +1,6 @@
 import { useState } from "react";
 import type { ChangeEvent } from "react";
 import { useNavigate } from "react-router-dom";
-import { MOCK_MONTHLY_PENSION } from "@/mocks/reemployment";
 import { useAuthStore } from "@/stores/authStore";
 import { useProfileStore } from "@/stores/profileStore";
 import { useReemploymentStore } from "@/stores/reemploymentStore";
@@ -27,7 +26,7 @@ export default function useReemploymentForm() {
     currentAge: calculateAge(user?.birthDate ?? ""),
     assets: Number(privateInfo.assets),
     monthlyExpense: Number(privateInfo.monthlyExpense),
-    monthlyPension: MOCK_MONTHLY_PENSION,
+    monthlyPension: Number(privateInfo.monthlyPension),
   };
 
   const isSubmittable = monthlyIncome !== "" && Number(monthlyIncome) > 0;

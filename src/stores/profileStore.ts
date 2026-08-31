@@ -6,10 +6,12 @@ export interface PrivateInfo {
   assets: string;
   // 월 지출액
   monthlyExpense: string;
-  // 세전 월 소득, 입력칸은 추후 추가 예정
+  // 세전 월 소득
   monthlyIncome: string;
   // 현재까지 근속연수
   serviceYears: string;
+  // 월 연금 수령액
+  monthlyPension: string;
 }
 
 interface ProfileState {
