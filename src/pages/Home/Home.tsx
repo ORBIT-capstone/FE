@@ -18,8 +18,15 @@ export default function Home() {
       <div className="relative mx-auto w-full max-w-97.5 px-7 pb-28">
         <HomeHeader />
 
-        <h1 className="mt-10 text-2xl font-bold text-white">안녕하세요, {nickname}님</h1>
-        <p className="mt-1.5 text-base text-white">변화하는 미래를 지속적으로 확인해보세요</p>
+        {/* 로그인 여부에 따른 인사말 분기 */}
+        <h1 className="mt-10 text-2xl font-bold text-white">
+          {nickname ? `안녕하세요, ${nickname}님` : "어서오세요, ORBIT입니다"}
+        </h1>
+        <p className="mt-1.5 text-base text-white">
+          {nickname
+            ? "변화하는 미래를 지속적으로 확인해보세요"
+            : "당신의 내일을 더 선명하게 설계해보세요"}
+        </p>
 
         <div className="mt-6">
           <UserTypeToggle value={userType} onChange={setUserType} />

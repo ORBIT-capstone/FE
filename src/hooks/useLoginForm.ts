@@ -1,8 +1,12 @@
 import { useState } from "react";
 import type { ChangeEvent, FormEvent } from "react";
+import { useNavigate } from "react-router-dom";
+import { MOCK_CURRENT_USER } from "@/mocks/currentUser";
 import { useAuthStore } from "@/stores/authStore";
 
 export default function useLoginForm() {
+  const navigate = useNavigate();
+  const setAuth = useAuthStore((state) => state.setAuth);
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
   const rememberMe = useAuthStore((state) => state.rememberMe);
@@ -23,6 +27,9 @@ export default function useLoginForm() {
   const handleSubmit = (event: FormEvent<HTMLFormElement>) => {
     event.preventDefault();
     if (!isFilled) return;
+
+    setAuth(MOCK_CURRENT_USER, "mock-access-token");
+    navigate("/");
   };
 
   return {
