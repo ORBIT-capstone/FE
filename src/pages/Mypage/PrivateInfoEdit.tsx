@@ -8,12 +8,16 @@ export default function PrivateInfoEdit() {
   const navigate = useNavigate();
   const {
     assets,
+    monthlyIncome,
     monthlyExpense,
     serviceYears,
+    monthlyPension,
     isSubmittable,
     handleAssetsChange,
+    handleMonthlyIncomeChange,
     handleMonthlyExpenseChange,
     handleServiceYearsChange,
+    handleMonthlyPensionChange,
     handleSave,
   } = usePrivateInfoForm();
 
@@ -41,6 +45,15 @@ export default function PrivateInfoEdit() {
           />
 
           <Input
+            label="월급(선택)"
+            unit="원"
+            variant="dark"
+            inputMode="numeric"
+            value={monthlyIncome}
+            onChange={handleMonthlyIncomeChange}
+          />
+
+          <Input
             label="월 지출액"
             unit="원"
             variant="dark"
@@ -56,6 +69,15 @@ export default function PrivateInfoEdit() {
             inputMode="numeric"
             value={serviceYears}
             onChange={handleServiceYearsChange}
+          />
+
+          <Input
+            label="월 연금 수령액(선택)"
+            unit="원"
+            variant="dark"
+            inputMode="numeric"
+            value={monthlyPension}
+            onChange={handleMonthlyPensionChange}
           />
         </div>
 
