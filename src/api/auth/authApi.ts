@@ -3,9 +3,8 @@ import type {
   LoginRequest,
   LoginResponse,
   LogoutRequest,
+  RefreshTokenRequest,
   SignupRequest,
-  UpdateMeRequest,
-  UserResponse,
 } from "@/types/auth";
 
 export const signup = async (request: SignupRequest) => {
@@ -22,18 +21,9 @@ export const logout = async (request: LogoutRequest) => {
   await axiosInstance.post("/api/users/logout", request);
 };
 
-export const getMe = async () => {
-  const { data } = await axiosInstance.get<UserResponse>("/api/users/me");
+// 토큰 재발급, 인터셉터 외 직접 호출용
+export const reissue = async (request: RefreshTokenRequest) => {
+  const { data } = await axiosInstance.post<LoginResponse>("/api/auth/refresh", request);
 
   return data;
-};
-
-export const updateMe = async (request: UpdateMeRequest) => {
-  const { data } = await axiosInstance.patch<UserResponse>("/api/users/me", request);
-
-  return data;
-};
-
-export const deleteAccount = async () => {
-  await axiosInstance.delete("/api/users/me");
 };

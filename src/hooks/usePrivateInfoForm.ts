@@ -1,5 +1,8 @@
-import { useState } from "react";
+import { useEffect, useRef, useState } from "react";
 import type { ChangeEvent } from "react";
+import { getApiErrorMessage } from "@/api/apiError";
+import usePrivateInfo from "@/hooks/usePrivateInfo";
+import useUpdateMeMutation from "@/queries/user/useUpdateMeMutation";
 import { useProfileStore } from "@/stores/profileStore";
 import { formatNumber } from "@/utils/format";
 
@@ -9,29 +12,62 @@ const toNumericValue = (value: string) => value.replace(/[^0-9]/g, "");
 // 천 단위 콤마 표기값
 const toDisplayValue = (value: string) => (value === "" ? "" : formatNumber(Number(value)));
 
-export default function usePrivateInfoForm() {
-  const privateInfo = useProfileStore((state) => state.privateInfo);
-  const setPrivateInfo = useProfileStore((state) => state.setPrivateInfo);
+// 선택 항목은 비어 있으면 기존 값 유지
+const toOptionalNumber = (value: string) => (value === "" ? undefined : Number(value));
 
-  // 기존 개인정보 값으로 초기화
-  const [assets, setAssets] = useState(privateInfo.assets);
-  const [monthlyIncome, setMonthlyIncome] = useState(privateInfo.monthlyIncome);
-  const [monthlyExpense, setMonthlyExpense] = useState(privateInfo.monthlyExpense);
-  const [serviceYears, setServiceYears] = useState(privateInfo.serviceYears);
-  const [monthlyPension, setMonthlyPension] = useState(privateInfo.monthlyPension);
+export default function usePrivateInfoForm() {
+  const { privateInfo, isLoading } = usePrivateInfo();
+  const setStoredMonthlyIncome = useProfileStore((state) => state.setMonthlyIncome);
+  const { mutate: updateMeMutate, isPending } = useUpdateMeMutation();
+
+  const [assets, setAssets] = useState("");
+  const [monthlyIncome, setMonthlyIncome] = useState("");
+  const [monthlyExpense, setMonthlyExpense] = useState("");
+  const [serviceYears, setServiceYears] = useState("");
+  const [monthlyPension, setMonthlyPension] = useState("");
+  const [errorMessage, setErrorMessage] = useState("");
+
+  const isInitializedRef = useRef(false);
+
+  // 조회한 개인정보로 기존 값 채움
+  useEffect(() => {
+    if (isLoading || isInitializedRef.current) return;
+
+    isInitializedRef.current = true;
+    setAssets(privateInfo.assets);
+    setMonthlyIncome(privateInfo.monthlyIncome);
+    setMonthlyExpense(privateInfo.monthlyExpense);
+    setServiceYears(privateInfo.serviceYears);
+    setMonthlyPension(privateInfo.monthlyPension);
+  }, [isLoading, privateInfo]);
 
   // 월급·월 연금 수령액은 선택 항목
-  const isSubmittable = [assets, monthlyExpense, serviceYears].every(
-    (value) => value.trim() !== "",
-  );
+  const isFilled = [assets, monthlyExpense, serviceYears].every((value) => value.trim() !== "");
+  const isSubmittable = isFilled && !isPending && !isLoading;
 
   const handleChange =
     (setValue: (value: string) => void) => (event: ChangeEvent<HTMLInputElement>) =>
       setValue(toNumericValue(event.target.value));
 
-  // 저장 시에만 전역 값 갱신
-  const handleSave = () => {
-    setPrivateInfo({ assets, monthlyIncome, monthlyExpense, serviceYears, monthlyPension });
+  // 개인정보 수정 요청 처리, 월급은 API 미지원으로 로컬 보관
+  const handleSave = (onSuccess: () => void) => {
+    if (!isSubmittable) return;
+
+    setStoredMonthlyIncome(monthlyIncome);
+
+    updateMeMutate(
+      {
+        asset: Number(assets),
+        monthlyExpenses: Number(monthlyExpense),
+        currentYears: Number(serviceYears),
+        monthlyPension: toOptionalNumber(monthlyPension),
+      },
+      {
+        onSuccess,
+        onError: (error) =>
+          setErrorMessage(getApiErrorMessage(error, "개인정보 수정에 실패했습니다")),
+      },
+    );
   };
 
   return {
@@ -42,6 +78,8 @@ export default function usePrivateInfoForm() {
     serviceYears,
     monthlyPension: toDisplayValue(monthlyPension),
     isSubmittable,
+    isPending,
+    errorMessage,
     handleAssetsChange: handleChange(setAssets),
     handleMonthlyIncomeChange: handleChange(setMonthlyIncome),
     handleMonthlyExpenseChange: handleChange(setMonthlyExpense),

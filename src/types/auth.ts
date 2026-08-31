@@ -36,39 +36,11 @@ export interface LogoutRequest {
   refreshToken: string;
 }
 
-export interface UpdateMeRequest {
-  name: string;
-  birthDate: string;
-  gender: ApiGender;
-}
-
-// 회원 정보 조회·수정 응답
-export interface UserResponse {
-  id: number | string;
-  email: string;
-  name: string;
-  birthDate: string;
-  gender: ApiGender;
-}
-
-// 화면에서 사용하는 회원 정보
-export interface AuthUser {
-  id: string;
-  email: string;
-  name: string;
-  birthDate: string;
-  gender: Gender;
+// 토큰 재발급 요청
+export interface RefreshTokenRequest {
+  refreshToken: string;
 }
 
 export const toApiGender = (gender: Gender): ApiGender => (gender === "male" ? "MALE" : "FEMALE");
 
 export const toGender = (gender: ApiGender): Gender => (gender === "MALE" ? "male" : "female");
-
-// 응답값을 화면용 회원 정보로 변환
-export const toAuthUser = (user: UserResponse): AuthUser => ({
-  id: String(user.id),
-  email: user.email,
-  name: user.name,
-  birthDate: user.birthDate,
-  gender: toGender(user.gender),
-});

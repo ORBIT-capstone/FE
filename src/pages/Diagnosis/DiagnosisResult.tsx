@@ -1,15 +1,20 @@
 import { Navigate, useNavigate } from "react-router-dom";
+import { getApiErrorMessage } from "@/api/apiError";
 import Button from "@/components/common/button/Button";
 import PageHeader from "@/components/common/header/PageHeader";
 import AgeDetailTable from "@/components/common/result/AgeDetailTable";
 import AssetChangeChart from "@/components/common/result/AssetChangeChart";
+import ResultPlaceholder from "@/components/common/result/ResultPlaceholder";
 import SummaryCard from "@/components/common/result/SummaryCard";
 import type { SummaryChip } from "@/components/common/result/SummaryCard";
+import useDiagnosisResult from "@/hooks/useDiagnosisResult";
+import useSaveDiagnosisMutation from "@/queries/diagnoses/useSaveDiagnosisMutation";
 import { useDiagnosisStore } from "@/stores/diagnosisStore";
-import { useMyPlanStore } from "@/stores/myPlanStore";
 import type { ReadinessStatus } from "@/types/diagnosis";
 import { findCrossAge, getDiagnosisScore, toAgeDetailRows, toAssetFlow } from "@/utils/diagnosis";
 import { formatWon } from "@/utils/format";
+
+const PAGE_TITLE = "은퇴 자산 진단 결과";
 
 // 진단 상태별 문구
 const STATUS_TEXT: Record<
@@ -37,8 +42,27 @@ const STATUS_TEXT: Record<
 
 export default function DiagnosisResult() {
   const navigate = useNavigate();
-  const result = useDiagnosisStore((state) => state.result);
-  const savePlan = useMyPlanStore((state) => state.savePlan);
+  const calculatedResult = useDiagnosisStore((state) => state.result);
+  const { result, isSaved, isLoading, errorMessage } = useDiagnosisResult(
+    "RETIREMENT_ASSET",
+    calculatedResult,
+  );
+  const {
+    mutate: saveMutate,
+    isPending,
+    error: saveError,
+  } = useSaveDiagnosisMutation("RETIREMENT_ASSET");
+
+  if (isLoading) return <ResultPlaceholder title={PAGE_TITLE} message="결과를 불러오는 중입니다" />;
+
+  if (isSaved && !result) {
+    return (
+      <ResultPlaceholder
+        title={PAGE_TITLE}
+        message={errorMessage || "저장된 결과를 찾을 수 없습니다"}
+      />
+    );
+  }
 
   // 결과 없이 직접 진입 시 입력 화면 복귀
   if (!result) return <Navigate to="/diagnosis" replace />;
@@ -65,16 +89,13 @@ export default function DiagnosisResult() {
     { label: "진단 상태", value: result.status, isEmphasis: true },
   ];
 
-  // 마이플랜 내역 저장 후 홈 복귀 처리, 추후 API 저장 연결 지점
-  const handleSave = () => {
-    savePlan("diagnosis");
-    navigate("/");
-  };
+  // 진단 결과 저장 후 홈 복귀 처리
+  const handleSave = () => saveMutate(result, { onSuccess: () => navigate("/") });
 
   return (
     <div className="min-h-dvh w-full bg-bg-base">
       <div className="mx-auto flex min-h-dvh w-full max-w-97.5 flex-col px-7 pb-10">
-        <PageHeader title="은퇴 자산 진단 결과" />
+        <PageHeader title={PAGE_TITLE} />
 
         <div className="mt-8 flex flex-col gap-6">
           <SummaryCard
@@ -90,9 +111,18 @@ export default function DiagnosisResult() {
           <AgeDetailTable rows={toAgeDetailRows(result)} />
         </div>
 
-        <Button onClick={handleSave} className="mt-8">
-          저장하기
-        </Button>
+        {saveError && (
+          <p className="mt-6 text-sm text-btn-active">
+            {getApiErrorMessage(saveError, "저장에 실패했습니다")}
+          </p>
+        )}
+
+        {/* 저장된 결과 조회 시에는 저장 버튼 미노출 */}
+        {!isSaved && (
+          <Button onClick={handleSave} disabled={isPending} className="mt-8">
+            {isPending ? "저장 중..." : "저장하기"}
+          </Button>
+        )}
       </div>
     </div>
   );

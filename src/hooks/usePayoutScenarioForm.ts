@@ -1,10 +1,10 @@
 import { useState } from "react";
 import { useNavigate } from "react-router-dom";
 import { getApiErrorMessage } from "@/api/apiError";
+import usePrivateInfo from "@/hooks/usePrivateInfo";
 import usePayoutScenarioMutation from "@/queries/payoutScenario/usePayoutScenarioMutation";
 import { useAuthStore } from "@/stores/authStore";
 import { usePayoutScenarioStore } from "@/stores/payoutScenarioStore";
-import { useProfileStore } from "@/stores/profileStore";
 import { calculateAge } from "@/utils/age";
 
 // 시나리오 비교 가능 최소 근속연수
@@ -13,7 +13,7 @@ const MIN_SERVICE_YEARS = 10;
 export default function usePayoutScenarioForm() {
   const navigate = useNavigate();
   const user = useAuthStore((state) => state.user);
-  const privateInfo = useProfileStore((state) => state.privateInfo);
+  const { privateInfo } = usePrivateInfo();
   const earlyYears = usePayoutScenarioStore((state) => state.earlyYears);
   const setEarlyYears = usePayoutScenarioStore((state) => state.setEarlyYears);
   const setResult = usePayoutScenarioStore((state) => state.setResult);

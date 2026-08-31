@@ -1,22 +1,35 @@
-import { useState } from "react";
+import { useEffect, useRef, useState } from "react";
 import type { ChangeEvent } from "react";
 import { getApiErrorMessage } from "@/api/apiError";
-import useUpdateMeMutation from "@/queries/auth/useUpdateMeMutation";
+import useMeQuery from "@/queries/user/useMeQuery";
+import useUpdateMeMutation from "@/queries/user/useUpdateMeMutation";
 import { useAuthStore } from "@/stores/authStore";
 import type { Gender } from "@/types/auth";
-import { toApiGender } from "@/types/auth";
+import { toApiGender, toGender } from "@/types/auth";
 
 export default function useProfileEditForm() {
   const user = useAuthStore((state) => state.user);
+  const { data: me, isLoading } = useMeQuery();
   const { mutate: updateMeMutate, isPending } = useUpdateMeMutation();
 
-  // 기존 회원 정보로 초기화
   const [name, setName] = useState(user?.name ?? "");
   const [birthDate, setBirthDate] = useState(user?.birthDate ?? "");
   const [gender, setGender] = useState<Gender>(user?.gender ?? "female");
   const [errorMessage, setErrorMessage] = useState("");
 
-  const isSubmittable = name.trim() !== "" && birthDate.trim() !== "" && !isPending;
+  const isInitializedRef = useRef(false);
+
+  // 조회한 회원 정보로 기존 값 채움
+  useEffect(() => {
+    if (!me || isInitializedRef.current) return;
+
+    isInitializedRef.current = true;
+    setName(me.name);
+    setBirthDate(me.birthDate);
+    setGender(toGender(me.gender));
+  }, [me]);
+
+  const isSubmittable = name.trim() !== "" && birthDate.trim() !== "" && !isPending && !isLoading;
 
   const handleNameChange = (event: ChangeEvent<HTMLInputElement>) => setName(event.target.value);
 

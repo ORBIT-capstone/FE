@@ -1,5 +1,5 @@
 import profileCharacter from "@/assets/icons/loginProfile.svg";
-import type { AuthUser } from "@/types/auth";
+import type { AuthUser } from "@/types/user";
 
 const GENDER_LABEL: Record<AuthUser["gender"], string> = {
   male: "남성",
