@@ -1,7 +1,8 @@
 import StatusGauge from "@/components/RetirementPlan/StatusGauge";
+import type { ReadinessStatus } from "@/types/diagnosis";
 
 interface CurrentStatusCardProps {
-  status: string;
+  status: ReadinessStatus;
   description: string;
   score: number;
   icon: string;

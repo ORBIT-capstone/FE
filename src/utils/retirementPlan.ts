@@ -1,160 +1,58 @@
 import { DETAIL_AGE_STEP } from "@/mocks/diagnosis";
-import {
-  CHART_AGE_STEP,
-  EXTRA_INCOME_NEED_RATE,
-  HYBRID_EXPENSE_RATE,
-  HYBRID_INCOME_RATE,
-  HYBRID_SAVING_RATE,
-  SAVING_NEED_RATE,
-} from "@/mocks/retirementPlan";
+import { CHART_AGE_STEP, EXPENSE_ADJUST_LIMIT, EXPENSE_ENOUGH_LIMIT } from "@/mocks/retirementPlan";
 import type { AgeDetailRow } from "@/types/diagnosis";
+import type { PlanAssetPoint, RecommendationResponse } from "@/types/retirementPlan";
 
 const MAN_WON = 10_000;
 
-export type PlanStatus = "SUFFICIENT" | "INSUFFICIENT";
-export type PlanRecommendType = "saving" | "extraIncome" | "hybrid";
-export type PlanStatusLevel = "good" | "soso" | "bad";
+export type ExpenseAdjustLevel = "adjust" | "proper" | "enough";
 
-// 저장된 진단 결과에서 뽑아낸 분석 기준값, 금액 단위는 만원
-export interface RetirementPlanBase {
-  currentAge: number;
-  targetAge: number;
-  assets: number;
-  monthlyExpense: number;
-  monthlyIncome: number;
-}
+const toManWon = (amount: number) => Math.round(amount / MAN_WON);
 
-// 그래프용 자산 흐름, 금액 단위는 원
-export interface PlanAssetPoint {
-  age: number;
-  asset: number;
-}
+// 기대수명 이후 구간 제외
+const getTimeline = (result: RecommendationResponse) =>
+  result.timeline.filter((point) => point.age <= result.target_age);
 
-export interface RetirementPlanResult {
-  currentAge: number;
-  targetAge: number;
-  // 현재 준비 수준 점수
-  score: number;
-  currentStatus: PlanStatus;
-  // 개선안 적용 시 목표 준비 상태
-  targetStatus: PlanStatus;
-  depleted: boolean;
-  depletionAge: number | null;
-  recommendType: PlanRecommendType;
-  statusLevel: PlanStatusLevel;
-  // 월 개선 금액, 원 단위
-  extraSaving: number;
-  extraIncome: number;
-  expenseAdjust: number;
-  assetFlow: PlanAssetPoint[];
-  ageDetails: AgeDetailRow[];
-}
+// 자산이 버티는 기간 비율 기반 점수, 응답에 없어 프론트에서 산출
+export const getScore = (result: RecommendationResponse) => {
+  const survivedYears = (result.depletion_age ?? result.target_age) - result.current_age;
+  const targetYears = Math.max(result.target_age - result.current_age, 1);
 
-// 부족액 비율 기준 추천 유형과 개선 금액 배분
-const distributeNeed = (needAmount: number, needRate: number) => {
-  if (needAmount === 0) {
-    return {
-      recommendType: "saving" as const,
-      statusLevel: "good" as const,
-      extraSaving: 0,
-      extraIncome: 0,
-      expenseAdjust: 0,
-    };
-  }
-
-  if (needRate <= SAVING_NEED_RATE) {
-    return {
-      recommendType: "saving" as const,
-      statusLevel: "soso" as const,
-      extraSaving: needAmount,
-      extraIncome: 0,
-      expenseAdjust: 0,
-    };
-  }
-
-  if (needRate <= EXTRA_INCOME_NEED_RATE) {
-    return {
-      recommendType: "extraIncome" as const,
-      statusLevel: "soso" as const,
-      extraSaving: 0,
-      extraIncome: needAmount,
-      expenseAdjust: 0,
-    };
-  }
-
-  return {
-    recommendType: "hybrid" as const,
-    statusLevel: "bad" as const,
-    extraSaving: Math.round(needAmount * HYBRID_SAVING_RATE),
-    extraIncome: Math.round(needAmount * HYBRID_INCOME_RATE),
-    expenseAdjust: Math.round(needAmount * HYBRID_EXPENSE_RATE),
-  };
+  return Math.min(Math.round((survivedYears / targetYears) * 100), 100);
 };
 
-// 진단 결과 기반 임시 설계, API 연동 시 이 함수만 교체 대상
-export const calculateRetirementPlan = (base: RetirementPlanBase): RetirementPlanResult => {
-  const months = Math.max((base.targetAge - base.currentAge) * 12, 1);
-
-  // 목표 연령까지 자산을 유지하기 위한 월 부족액, 만원 단위
-  const need = Math.max(base.monthlyExpense - base.monthlyIncome - base.assets / months, 0);
-  const needRate = base.monthlyExpense === 0 ? 0 : need / base.monthlyExpense;
-  const { recommendType, statusLevel, extraSaving, extraIncome, expenseAdjust } = distributeNeed(
-    Math.round(need * MAN_WON),
-    needRate,
-  );
-
-  const annualIncome = Math.round(
-    (base.monthlyIncome + (extraSaving + extraIncome) / MAN_WON) * 12,
-  );
-  const annualExpense = Math.round((base.monthlyExpense - expenseAdjust / MAN_WON) * 12);
-  const annualGap = annualIncome - annualExpense;
-
-  const assetFlow: PlanAssetPoint[] = [];
-  const ageDetails: AgeDetailRow[] = [];
-
-  let asset = base.assets;
-  let cumulativeGap = 0;
-  let depletionAge: number | null = null;
-
-  for (let age = base.currentAge; age <= base.targetAge; age += 1) {
-    const isLastAge = age === base.targetAge;
-
-    if ((age - base.currentAge) % CHART_AGE_STEP === 0 || isLastAge) {
-      assetFlow.push({ age, asset: Math.max(Math.round(asset), 0) * MAN_WON });
-    }
-
-    if ((age - base.currentAge) % DETAIL_AGE_STEP === 0 || isLastAge) {
-      ageDetails.push({
-        age,
-        annualIncome,
-        annualExpense,
-        annualShortage: -annualGap,
-        cumulativeShortage: -cumulativeGap,
-        asset: Math.max(Math.round(asset), 0),
-      });
-    }
-
-    // 목표 연령 도달 전 고갈 여부 판정
-    if (asset < 0 && depletionAge === null && !isLastAge) depletionAge = age;
-
-    asset += annualGap;
-    cumulativeGap += annualGap;
+// 생활비 기준 조정 필요액, API 응답에 없어 프론트에서 산출
+export const getExpenseAdjust = (monthlyExpense: number) => {
+  if (monthlyExpense > EXPENSE_ADJUST_LIMIT) {
+    return { level: "adjust" as ExpenseAdjustLevel, amount: monthlyExpense - EXPENSE_ADJUST_LIMIT };
   }
 
-  return {
-    currentAge: base.currentAge,
-    targetAge: base.targetAge,
-    score: Math.round(Math.max(1 - needRate, 0) * 100),
-    currentStatus: need > 0 ? "INSUFFICIENT" : "SUFFICIENT",
-    targetStatus: "SUFFICIENT",
-    depleted: depletionAge !== null,
-    depletionAge,
-    recommendType,
-    statusLevel,
-    extraSaving,
-    extraIncome,
-    expenseAdjust,
-    assetFlow,
-    ageDetails,
-  };
+  const level: ExpenseAdjustLevel = monthlyExpense < EXPENSE_ENOUGH_LIMIT ? "enough" : "proper";
+
+  return { level, amount: 0 };
 };
+
+// 자산 변화 그래프용 변환, 원 단위 유지
+export const toAssetFlow = (result: RecommendationResponse): PlanAssetPoint[] => {
+  const timeline = getTimeline(result);
+
+  return timeline
+    .filter(
+      (point, index) =>
+        (point.age - result.current_age) % CHART_AGE_STEP === 0 || index === timeline.length - 1,
+    )
+    .map((point) => ({ age: point.age, asset: point.asset }));
+};
+
+// 연령별 예상 내역용 변환, 10년 단위 추출
+export const toAgeDetailRows = (result: RecommendationResponse): AgeDetailRow[] =>
+  getTimeline(result)
+    .filter((point) => (point.age - result.current_age) % DETAIL_AGE_STEP === 0)
+    .map((point) => ({
+      age: point.age,
+      annualIncome: toManWon(point.annual_income),
+      annualExpense: toManWon(point.annual_expense),
+      annualShortage: toManWon(point.annual_gap),
+      cumulativeShortage: toManWon(point.cumulative_annual_gap),
+      asset: toManWon(point.asset),
+    }));
