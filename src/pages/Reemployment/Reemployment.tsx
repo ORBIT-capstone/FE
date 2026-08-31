@@ -33,8 +33,8 @@ export default function Reemployment() {
   ];
 
   return (
-    <div className="min-h-dvh w-full bg-bg-base">
-      <div className="mx-auto flex min-h-dvh w-full max-w-97.5 flex-col px-7 pb-32">
+    <div className="flex min-h-svh w-full flex-col bg-bg-base">
+      <div className="mx-auto w-full max-w-97.5 flex-1 px-7 pb-8">
         <PageHeader title="재취업 연금 감액 계산" />
 
         <p className="mt-4 text-sm leading-relaxed text-muted">

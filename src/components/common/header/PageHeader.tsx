@@ -10,7 +10,7 @@ export default function PageHeader({ title }: PageHeaderProps) {
   const navigate = useNavigate();
 
   return (
-    <header className="flex items-center gap-2 pt-8">
+    <header className="flex items-center gap-4 pt-8">
       <button
         type="button"
         onClick={() => navigate(-1)}

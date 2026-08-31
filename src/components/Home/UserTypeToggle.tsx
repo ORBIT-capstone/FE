@@ -14,6 +14,13 @@ interface UserTypeToggleProps {
 
 export default function UserTypeToggle({ value, onChange }: UserTypeToggleProps) {
   return (
-    <SegmentedToggle items={TOGGLE_ITEMS} value={value} onChange={onChange} itemClassName="h-16" />
+    <SegmentedToggle
+      items={TOGGLE_ITEMS}
+      value={value}
+      onChange={onChange}
+      itemClassName="h-16"
+      // 퇴직자 화면은 민트 계열
+      tone={value === "retired" ? "mint" : "primary"}
+    />
   );
 }

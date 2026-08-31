@@ -52,21 +52,21 @@ export default function Mypage() {
   // 로그아웃 상태 진입 시 로그인 유도
   if (!isLoggedIn || !user) {
     return (
-      <div className="min-h-dvh w-full bg-bg-base">
+      <div className="min-h-svh w-full bg-bg-base">
         <LoginRequiredModal isOpen onCancel={() => navigate("/")} onConfirm={goLogin} />
       </div>
     );
   }
 
   return (
-    <div className="min-h-dvh w-full bg-bg-base">
+    <div className="min-h-svh w-full bg-bg-base">
       {/* 화면 폭 전체를 채우는 헤더 구분선 */}
       <header className="mx-auto w-full max-w-97.5">
         <h1 className="pt-14 text-center text-xl font-bold text-white">마이페이지</h1>
         <div className="mt-4 h-1.75 bg-btn-active" />
       </header>
 
-      <div className="mx-auto flex w-full max-w-97.5 flex-col px-7 pb-28">
+      <div className="mx-auto flex w-full max-w-97.5 flex-col px-7 pb-nav-safe">
         <div className="mt-10">
           <ProfileCard user={user} onEditClick={() => navigate("/mypage/profile")} />
         </div>

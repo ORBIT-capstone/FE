@@ -1,8 +1,7 @@
 import ageIcon from "@/assets/icons/ageIcon.svg";
 import assetIcon from "@/assets/icons/assetIcon.svg";
 import expenseIcon from "@/assets/icons/expenseIcon.svg";
-import genderFemaleIcon from "@/assets/icons/genderFemaleIcon.svg";
-import genderMaleIcon from "@/assets/icons/genderMaleIcon.svg";
+import serviceYearIcon from "@/assets/icons/serviceYearIcon.svg";
 import Button from "@/components/common/button/Button";
 import Loading from "@/components/common/Loading";
 import MyInfoCard from "@/components/common/card/MyInfoCard";
@@ -10,6 +9,7 @@ import type { MyInfoItem } from "@/components/common/card/MyInfoCard";
 import ChipGroup from "@/components/common/chip/ChipGroup";
 import type { ChipItem } from "@/components/common/chip/ChipGroup";
 import PageHeader from "@/components/common/header/PageHeader";
+import InlineEditField from "@/components/common/input/InlineEditField";
 import usePayoutScenarioForm from "@/hooks/usePayoutScenarioForm";
 import { formatManWon } from "@/utils/format";
 
@@ -18,15 +18,15 @@ const EARLY_YEAR_ITEMS: ChipItem<number>[] = [1, 2, 3, 4, 5].map((year) => ({
   value: year,
 }));
 
-const GENDER_LABEL = { male: "남성", female: "여성" };
-
-// 성별에 따른 아이콘 분기
-const GENDER_ICON = { male: genderMaleIcon, female: genderFemaleIcon };
+// 예상 월 연금 표기, 미입력이면 서버 추정 안내
+const toPensionText = (value: string) => (value === "" ? "자동 계산" : formatManWon(Number(value)));
 
 export default function PayoutScenario() {
   const {
     baseInfo,
     earlyYears,
+    monthlyPension,
+    setMonthlyPension,
     isPending,
     isSubmittable,
     errorMessage,
@@ -40,16 +40,12 @@ export default function PayoutScenario() {
     { icon: ageIcon, label: "현재 나이", value: `${baseInfo.currentAge}세` },
     { icon: assetIcon, label: "보유 자산", value: formatManWon(baseInfo.assets) },
     { icon: expenseIcon, label: "월 생활비", value: formatManWon(baseInfo.monthlyExpense) },
-    {
-      icon: GENDER_ICON[baseInfo.gender],
-      label: "성별",
-      value: GENDER_LABEL[baseInfo.gender],
-    },
+    { icon: serviceYearIcon, label: "근속연수", value: `${baseInfo.serviceYears}년` },
   ];
 
   return (
-    <div className="min-h-dvh w-full bg-bg-base">
-      <div className="mx-auto flex min-h-dvh w-full max-w-97.5 flex-col px-7 pb-10">
+    <div className="min-h-svh w-full bg-bg-base">
+      <div className="mx-auto flex min-h-svh w-full max-w-97.5 flex-col px-7 pb-page-safe">
         <PageHeader title="수령방식별 시나리오 비교" />
 
         <p className="mt-4 text-sm leading-relaxed break-keep text-justify text-muted">
@@ -59,6 +55,16 @@ export default function PayoutScenario() {
 
         <div className="mt-8">
           <MyInfoCard items={myInfoItems} onEditClick={handleEditClick} />
+        </div>
+
+        <div className="mt-8">
+          <InlineEditField
+            label="예상 월 연금"
+            value={monthlyPension}
+            onChange={setMonthlyPension}
+            formatValue={toPensionText}
+            unit="원"
+          />
         </div>
 
         <div className="mt-8">

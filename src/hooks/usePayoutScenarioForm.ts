@@ -1,4 +1,4 @@
-import { useState } from "react";
+import { useEffect, useRef, useState } from "react";
 import { useNavigate } from "react-router-dom";
 import { getApiErrorMessage } from "@/api/apiError";
 import usePrivateInfo from "@/hooks/usePrivateInfo";
@@ -13,13 +13,25 @@ const MIN_SERVICE_YEARS = 10;
 export default function usePayoutScenarioForm() {
   const navigate = useNavigate();
   const user = useAuthStore((state) => state.user);
-  const { privateInfo } = usePrivateInfo();
+  const { privateInfo, isLoading } = usePrivateInfo();
   const earlyYears = usePayoutScenarioStore((state) => state.earlyYears);
   const setEarlyYears = usePayoutScenarioStore((state) => state.setEarlyYears);
   const setResult = usePayoutScenarioStore((state) => state.setResult);
   const { mutate: compareMutate, isPending } = usePayoutScenarioMutation();
 
   const [errorMessage, setErrorMessage] = useState("");
+
+  // 인라인 편집용 월 연금, 이 화면에서만 조정
+  const [monthlyPension, setMonthlyPension] = useState("");
+  const isInitializedRef = useRef(false);
+
+  // 개인정보 조회 후 저장된 월 연금으로 초기화
+  useEffect(() => {
+    if (isLoading || isInitializedRef.current) return;
+
+    isInitializedRef.current = true;
+    setMonthlyPension(privateInfo.monthlyPension);
+  }, [isLoading, privateInfo]);
 
   // 마이페이지 저장값 기반 내 정보
   const baseInfo = {
@@ -65,6 +77,8 @@ export default function usePayoutScenarioForm() {
         total_service_years: baseInfo.serviceYears,
         // 조기수령 연수 매핑
         early_years: earlyYears,
+        // 월 연금 매핑, 비우면 서버 추정값 사용
+        monthly_pension: monthlyPension === "" ? undefined : Number(monthlyPension),
       },
       {
         onSuccess: (result) => {
@@ -79,6 +93,9 @@ export default function usePayoutScenarioForm() {
 
   return {
     baseInfo,
+    // 인라인 편집용 원 단위 문자열
+    monthlyPension,
+    setMonthlyPension,
     earlyYears,
     isPending,
     isSubmittable,

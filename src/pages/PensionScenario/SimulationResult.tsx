@@ -56,8 +56,8 @@ export default function SimulationResult() {
   const detailPath = isSaved ? `/pension-scenario/detail/${id}` : "/pension-scenario/detail";
 
   return (
-    <div className="min-h-dvh w-full bg-bg-base">
-      <div className="mx-auto flex min-h-dvh w-full max-w-97.5 flex-col px-7 pb-10">
+    <div className="min-h-svh w-full bg-bg-base">
+      <div className="mx-auto flex min-h-svh w-full max-w-97.5 flex-col px-7 pb-page-safe">
         <PageHeader title={PAGE_TITLE} />
 
         <h2 className="mt-20 text-center text-2xl leading-relaxed font-medium text-white">
@@ -74,7 +74,7 @@ export default function SimulationResult() {
           입니다
         </h2>
 
-        <img src={astronaut} alt="" className="mx-auto mt-14 w-80" />
+        <img src={astronaut} alt="" className="mx-auto mt-8 w-80" />
 
         {saveError && (
           <p className="mt-6 text-center text-sm text-btn-active">
