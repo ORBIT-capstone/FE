@@ -1,16 +1,22 @@
 import { useState } from "react";
 import type { ChangeEvent, FormEvent } from "react";
 import { useNavigate } from "react-router-dom";
-import { MOCK_CURRENT_USER } from "@/mocks/currentUser";
+import type { LoginErrorType } from "@/api/auth/authError";
+import { getLoginErrorType } from "@/api/auth/authError";
+import useLoginMutation from "@/queries/auth/useLoginMutation";
 import { useAuthStore } from "@/stores/authStore";
 
 export default function useLoginForm() {
   const navigate = useNavigate();
-  const setAuth = useAuthStore((state) => state.setAuth);
-  const [email, setEmail] = useState("");
-  const [password, setPassword] = useState("");
   const rememberMe = useAuthStore((state) => state.rememberMe);
   const setRememberMe = useAuthStore((state) => state.setRememberMe);
+  const { mutate: loginMutate, isPending } = useLoginMutation();
+
+  const [email, setEmail] = useState("");
+  const [password, setPassword] = useState("");
+
+  // 로그인 실패 유형, 팝업 분기용
+  const [loginErrorType, setLoginErrorType] = useState<LoginErrorType | null>(null);
 
   // 이메일·비밀번호 모두 입력 여부
   const isFilled = email.trim() !== "" && password.trim() !== "";
@@ -23,13 +29,18 @@ export default function useLoginForm() {
   const handleRememberMeChange = (event: ChangeEvent<HTMLInputElement>) =>
     setRememberMe(event.target.checked);
 
-  // 로그인 요청 처리, 추후 tanstack-query mutation 연결 지점
+  // 로그인 요청 처리
   const handleSubmit = (event: FormEvent<HTMLFormElement>) => {
     event.preventDefault();
-    if (!isFilled) return;
+    if (!isFilled || isPending) return;
 
-    setAuth(MOCK_CURRENT_USER, "mock-access-token");
-    navigate("/");
+    loginMutate(
+      { email, password },
+      {
+        onSuccess: () => navigate("/"),
+        onError: (error) => setLoginErrorType(getLoginErrorType(error)),
+      },
+    );
   };
 
   return {
@@ -37,9 +48,13 @@ export default function useLoginForm() {
     password,
     rememberMe,
     isFilled,
+    isPending,
+    loginErrorType,
     handleEmailChange,
     handlePasswordChange,
     handleRememberMeChange,
     handleSubmit,
+    closeLoginError: () => setLoginErrorType(null),
+    goSignup: () => navigate("/signup"),
   };
 }

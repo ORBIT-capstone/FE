@@ -1,17 +1,17 @@
 import profileCharacter from "@/assets/icons/loginProfile.svg";
-import type { Profile } from "@/stores/profileStore";
+import type { AuthUser } from "@/types/auth";
 
-const GENDER_LABEL: Record<Profile["gender"], string> = {
+const GENDER_LABEL: Record<AuthUser["gender"], string> = {
   male: "남성",
   female: "여성",
 };
 
 interface ProfileCardProps {
-  profile: Profile;
+  user: AuthUser;
   onEditClick: () => void;
 }
 
-export default function ProfileCard({ profile, onEditClick }: ProfileCardProps) {
+export default function ProfileCard({ user, onEditClick }: ProfileCardProps) {
   return (
     <section className="rounded-2xl border border-white/10 bg-card px-5 py-5">
       <div className="flex items-center gap-4">
@@ -21,16 +21,14 @@ export default function ProfileCard({ profile, onEditClick }: ProfileCardProps) 
 
         <div className="min-w-0 flex-1">
           <div className="flex items-start justify-between gap-2">
-            <h2 className="truncate text-xl font-bold text-white">{profile.name}</h2>
+            <h2 className="truncate text-xl font-bold text-white">{user.name}</h2>
 
             <span className="shrink-0 rounded-full bg-white px-4 py-1 text-xs font-bold text-bg-base">
-              {GENDER_LABEL[profile.gender]}
+              {GENDER_LABEL[user.gender]}
             </span>
           </div>
 
-          <p className="mt-2 text-xl font-bold text-white">
-            {profile.birthDate.replace(/-/g, ".")}
-          </p>
+          <p className="mt-2 text-xl font-bold text-white">{user.birthDate.replace(/-/g, ".")}</p>
         </div>
       </div>
 

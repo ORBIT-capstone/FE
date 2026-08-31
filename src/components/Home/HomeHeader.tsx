@@ -4,7 +4,7 @@ import { useAuthStore } from "@/stores/authStore";
 
 export default function HomeHeader() {
   const navigate = useNavigate();
-  const nickname = useAuthStore((state) => state.user?.nickname);
+  const name = useAuthStore((state) => state.user?.name);
 
   return (
     <header className="flex items-center justify-between pt-8">
@@ -13,10 +13,10 @@ export default function HomeHeader() {
       {/* 로그인 여부에 따른 이름·로그인 텍스트 분기 */}
       <button
         type="button"
-        onClick={() => navigate(nickname ? "/mypage" : "/login")}
+        onClick={() => navigate(name ? "/mypage" : "/login")}
         className="cursor-pointer text-base font-bold text-white underline-offset-4 hover:underline active:underline"
       >
-        {nickname ? `${nickname}님` : "로그인"}
+        {name ? `${name}님` : "로그인"}
       </button>
     </header>
   );

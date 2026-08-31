@@ -7,7 +7,7 @@ import { useAuthStore } from "@/stores/authStore";
 import { useUserTypeStore } from "@/stores/userTypeStore";
 
 export default function Home() {
-  const nickname = useAuthStore((state) => state.user?.nickname);
+  const name = useAuthStore((state) => state.user?.name);
   const userType = useUserTypeStore((state) => state.userType);
   const setUserType = useUserTypeStore((state) => state.setUserType);
 
@@ -20,10 +20,10 @@ export default function Home() {
 
         {/* 로그인 여부에 따른 인사말 분기 */}
         <h1 className="mt-10 text-2xl font-bold text-white">
-          {nickname ? `안녕하세요, ${nickname}님` : "어서오세요, ORBIT입니다"}
+          {name ? `안녕하세요, ${name}님` : "어서오세요, ORBIT입니다"}
         </h1>
         <p className="mt-1.5 text-base text-white">
-          {nickname
+          {name
             ? "변화하는 미래를 지속적으로 확인해보세요"
             : "당신의 내일을 더 선명하게 설계해보세요"}
         </p>

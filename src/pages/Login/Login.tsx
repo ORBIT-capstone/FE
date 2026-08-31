@@ -1,7 +1,13 @@
 import { Link } from "react-router-dom";
 import Button from "@/components/common/button/Button";
 import Input from "@/components/common/input/Input";
+import Modal from "@/components/common/modal/Modal";
 import useLoginForm from "@/hooks/useLoginForm";
+
+// 로그인 실패 안내 문구
+const INVALID_MESSAGE =
+  "로그인 정보를 확인해 주세요\n이메일 또는 비밀번호가 올바르지 않습니다.\n다시 입력해 주세요";
+const NOT_FOUND_MESSAGE = "일치하는 회원정보가 없습니다\n회원가입을 하시겠습니까?";
 
 export default function Login() {
   const {
@@ -9,10 +15,14 @@ export default function Login() {
     password,
     rememberMe,
     isFilled,
+    isPending,
+    loginErrorType,
     handleEmailChange,
     handlePasswordChange,
     handleRememberMeChange,
     handleSubmit,
+    closeLoginError,
+    goSignup,
   } = useLoginForm();
 
   return (
@@ -51,8 +61,8 @@ export default function Login() {
             <span className="text-base text-white">Remember me</span>
           </label>
 
-          <Button type="submit" disabled={!isFilled} className="mt-1">
-            로그인 하기
+          <Button type="submit" disabled={!isFilled || isPending} className="mt-1">
+            {isPending ? "로그인 중..." : "로그인 하기"}
           </Button>
         </form>
 
@@ -66,6 +76,23 @@ export default function Login() {
           </Link>
         </div>
       </div>
+
+      <Modal
+        isOpen={loginErrorType === "invalid"}
+        message={INVALID_MESSAGE}
+        confirmLabel="확인"
+        variant="single"
+        onCancel={closeLoginError}
+        onConfirm={closeLoginError}
+      />
+
+      <Modal
+        isOpen={loginErrorType === "notFound"}
+        message={NOT_FOUND_MESSAGE}
+        confirmLabel="회원가입하기"
+        onCancel={closeLoginError}
+        onConfirm={goSignup}
+      />
     </div>
   );
 }

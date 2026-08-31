@@ -1,24 +1,37 @@
 import { useState } from "react";
 import type { ChangeEvent } from "react";
-import type { Gender } from "@/stores/profileStore";
-import { useProfileStore } from "@/stores/profileStore";
+import { getApiErrorMessage } from "@/api/auth/authError";
+import useUpdateMeMutation from "@/queries/auth/useUpdateMeMutation";
+import { useAuthStore } from "@/stores/authStore";
+import type { Gender } from "@/types/auth";
+import { toApiGender } from "@/types/auth";
 
 export default function useProfileEditForm() {
-  const profile = useProfileStore((state) => state.profile);
-  const setProfile = useProfileStore((state) => state.setProfile);
+  const user = useAuthStore((state) => state.user);
+  const { mutate: updateMeMutate, isPending } = useUpdateMeMutation();
 
-  // 기존 프로필 값으로 초기화
-  const [name, setName] = useState(profile.name);
-  const [birthDate, setBirthDate] = useState(profile.birthDate);
-  const [gender, setGender] = useState<Gender>(profile.gender);
+  // 기존 회원 정보로 초기화
+  const [name, setName] = useState(user?.name ?? "");
+  const [birthDate, setBirthDate] = useState(user?.birthDate ?? "");
+  const [gender, setGender] = useState<Gender>(user?.gender ?? "female");
+  const [errorMessage, setErrorMessage] = useState("");
 
-  const isSubmittable = name.trim() !== "" && birthDate.trim() !== "";
+  const isSubmittable = name.trim() !== "" && birthDate.trim() !== "" && !isPending;
 
   const handleNameChange = (event: ChangeEvent<HTMLInputElement>) => setName(event.target.value);
 
-  // 저장 시에만 전역 값 갱신
-  const handleSave = () => {
-    setProfile({ ...profile, name, birthDate, gender });
+  // 회원 정보 수정 요청 처리
+  const handleSave = (onSuccess: () => void) => {
+    if (!isSubmittable) return;
+
+    updateMeMutate(
+      { name, birthDate, gender: toApiGender(gender) },
+      {
+        onSuccess,
+        onError: (error) =>
+          setErrorMessage(getApiErrorMessage(error, "회원 정보 수정에 실패했습니다")),
+      },
+    );
   };
 
   return {
@@ -26,6 +39,8 @@ export default function useProfileEditForm() {
     birthDate,
     gender,
     isSubmittable,
+    isPending,
+    errorMessage,
     handleNameChange,
     setBirthDate,
     setGender,
