@@ -16,6 +16,8 @@ export default function Reemployment() {
     baseInfo,
     monthlyIncome,
     isSubmittable,
+    isPending,
+    errorMessage,
     handleMonthlyIncomeChange,
     handleSubmit,
     handleEditClick,
@@ -46,18 +48,23 @@ export default function Reemployment() {
         <div className="mt-8">
           <Input
             label="월 소득"
-            unit="만원"
+            unit="원"
             variant="dark"
             inputMode="numeric"
+            placeholder="원 단위로 입력해주세요"
             value={monthlyIncome}
             onChange={handleMonthlyIncomeChange}
           />
         </div>
+
+        {errorMessage && (
+          <p className="mt-6 text-sm whitespace-pre-line text-btn-active">{errorMessage}</p>
+        )}
       </div>
 
       <FixedBottomBar>
         <Button tone="mint" onClick={handleSubmit} disabled={!isSubmittable}>
-          재취업 연금 감액 계산하기
+          {isPending ? "계산 중..." : "재취업 연금 감액 계산하기"}
         </Button>
       </FixedBottomBar>
     </div>
