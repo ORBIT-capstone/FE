@@ -1,5 +1,5 @@
 import type { Gender } from "@/types/auth";
-import type { DiagnosisStatus, DiagnosisTimelinePoint } from "@/types/diagnosis";
+import type { DiagnosisTimelinePoint, ReadinessStatus } from "@/types/diagnosis";
 
 // 입력 화면 값, 금액은 원 단위 문자열
 export interface ReemploymentInput {
@@ -29,6 +29,6 @@ export interface ReductionResponse {
   depletion_age: number | null;
   depleted: boolean;
   target_age: number;
-  status: DiagnosisStatus;
+  status: ReadinessStatus;
   timeline: DiagnosisTimelinePoint[];
 }

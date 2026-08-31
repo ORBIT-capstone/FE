@@ -6,12 +6,12 @@ import AgeDetailTable from "@/components/common/result/AgeDetailTable";
 import AssetChangeChart from "@/components/common/result/AssetChangeChart";
 import SummaryCard from "@/components/common/result/SummaryCard";
 import type { SummaryChip } from "@/components/common/result/SummaryCard";
-import { GRADE_TEXT } from "@/mocks/reemployment";
+import { STATUS_TEXT } from "@/mocks/reemployment";
 import { useMyPlanStore } from "@/stores/myPlanStore";
 import { useReemploymentStore } from "@/stores/reemploymentStore";
 import { findCrossAge } from "@/utils/diagnosis";
 import { formatManCheonWon, formatNumber } from "@/utils/format";
-import { getGrade, getScore, toAgeDetailRows, toAssetFlow } from "@/utils/reemployment";
+import { getScore, toAgeDetailRows, toAssetFlow } from "@/utils/reemployment";
 
 export default function ReemploymentDetail() {
   const navigate = useNavigate();
@@ -22,7 +22,7 @@ export default function ReemploymentDetail() {
   if (!result) return <Navigate to="/reemployment" replace />;
 
   const score = getScore(result);
-  const gradeText = GRADE_TEXT[getGrade(score)];
+  const statusText = STATUS_TEXT[result.status];
   const assetFlow = toAssetFlow(result);
 
   const chips: SummaryChip[] = [
@@ -57,11 +57,11 @@ export default function ReemploymentDetail() {
         <div className="mt-8 flex flex-col gap-6">
           <SummaryCard
             score={score}
-            statusLabel={gradeText.label}
-            headline={gradeText.headline}
-            description={gradeText.description}
+            statusLabel={statusText.label}
+            headline={statusText.headline}
+            description={statusText.description}
             chips={chips}
-            tone={gradeText.tone}
+            tone={statusText.tone}
           />
 
           <AssetChangeChart data={assetFlow} crossAge={findCrossAge(assetFlow)} tone="mint" />

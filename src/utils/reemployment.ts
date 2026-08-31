@@ -1,12 +1,8 @@
-import { DETAIL_AGE_STEP, SUFFICIENT_SCORE } from "@/mocks/diagnosis";
-import { MODERATE_SCORE } from "@/mocks/reemployment";
+import { DETAIL_AGE_STEP } from "@/mocks/diagnosis";
 import type { AgeDetailRow, AssetFlowPoint } from "@/types/diagnosis";
 import type { ReductionResponse } from "@/types/reemployment";
 
 const MAN_WON = 10_000;
-
-// 점수 구간별 준비 등급, API status 는 2단계라 점수 기준으로 판정
-export type ReemploymentGrade = "sufficient" | "moderate" | "insufficient";
 
 const toManWon = (amount: number) => Math.round(amount / MAN_WON);
 
@@ -20,13 +16,6 @@ export const getScore = (result: ReductionResponse) => {
   const targetYears = Math.max(result.target_age - result.current_age, 1);
 
   return Math.min(Math.round((survivedYears / targetYears) * 100), 100);
-};
-
-// 점수 구간별 등급
-export const getGrade = (score: number): ReemploymentGrade => {
-  if (score >= SUFFICIENT_SCORE) return "sufficient";
-
-  return score >= MODERATE_SCORE ? "moderate" : "insufficient";
 };
 
 // 감액 전 월 연금 수령액

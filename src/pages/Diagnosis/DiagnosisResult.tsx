@@ -7,13 +7,13 @@ import SummaryCard from "@/components/common/result/SummaryCard";
 import type { SummaryChip } from "@/components/common/result/SummaryCard";
 import { useDiagnosisStore } from "@/stores/diagnosisStore";
 import { useMyPlanStore } from "@/stores/myPlanStore";
-import type { DiagnosisStatus } from "@/types/diagnosis";
+import type { ReadinessStatus } from "@/types/diagnosis";
 import { findCrossAge, getDiagnosisScore, toAgeDetailRows, toAssetFlow } from "@/utils/diagnosis";
 import { formatWon } from "@/utils/format";
 
 // 진단 상태별 문구
 const STATUS_TEXT: Record<
-  DiagnosisStatus,
+  ReadinessStatus,
   { label: string; headline: string; description: string }
 > = {
   SUFFICIENT: {
@@ -21,6 +21,11 @@ const STATUS_TEXT: Record<
     headline: "충분 단계입니다",
     description:
       "현재 자산과 소득으로\n목표 은퇴 시점까지 안정적인\n생활이 가능할 것으로 예상됩니다",
+  },
+  MIDDLE: {
+    label: "중간",
+    headline: "중간 단계입니다",
+    description: "현재 자산과 소득으로\n생활은 가능하지만\n여유가 크지 않을 것으로 예상됩니다",
   },
   INSUFFICIENT: {
     label: "부족",

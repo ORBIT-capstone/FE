@@ -5,11 +5,11 @@ import PageHeader from "@/components/common/header/PageHeader";
 import ScoreGauge from "@/components/common/result/ScoreGauge";
 import PensionCompareChart from "@/components/Reemployment/PensionCompareChart";
 import ResultSlider from "@/components/Reemployment/ResultSlider";
-import { GRADE_TEXT } from "@/mocks/reemployment";
+import { STATUS_TEXT } from "@/mocks/reemployment";
 import { useAuthStore } from "@/stores/authStore";
 import { useReemploymentStore } from "@/stores/reemploymentStore";
 import { formatManCheonWon, formatNumber } from "@/utils/format";
-import { getGrade, getOriginalPension, getReductionRate, getScore } from "@/utils/reemployment";
+import { getOriginalPension, getReductionRate, getScore } from "@/utils/reemployment";
 
 export default function ReemploymentResult() {
   const navigate = useNavigate();
@@ -22,7 +22,7 @@ export default function ReemploymentResult() {
   const originalPension = getOriginalPension(result);
   const reductionRate = getReductionRate(result);
   const score = getScore(result);
-  const gradeText = GRADE_TEXT[getGrade(score)];
+  const statusText = STATUS_TEXT[result.status];
 
   const pensionSlide = (
     <div className="flex h-full flex-col items-center justify-center">
@@ -39,8 +39,8 @@ export default function ReemploymentResult() {
       <div className="mt-12">
         <ScoreGauge
           score={score}
-          statusLabel={gradeText.label}
-          tone={gradeText.tone}
+          statusLabel={statusText.label}
+          tone={statusText.tone}
           size="large"
         />
       </div>

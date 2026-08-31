@@ -4,6 +4,8 @@ interface ImprovementCardProps {
   prefix: string;
   amount: string;
   suffix: string;
+  // 조정이 필요 없을 때 대체 문구
+  noticeText?: string;
 }
 
 // 개선안 항목 카드
@@ -13,6 +15,7 @@ export default function ImprovementCard({
   prefix,
   amount,
   suffix,
+  noticeText,
 }: ImprovementCardProps) {
   return (
     <div className="flex items-center gap-4 rounded-2xl bg-card px-5 py-4">
@@ -20,12 +23,18 @@ export default function ImprovementCard({
 
       <div className="min-w-0">
         <h3 className="text-sm font-bold text-sub-yellow">{title}</h3>
-        <p className="mt-2 text-xs leading-relaxed text-white">
-          {prefix}
-          <br />
-          매월 <span className="font-bold text-sub-yellow">{amount}</span>
-          {suffix}
-        </p>
+        {noticeText ? (
+          <p className="mt-2 text-xs leading-relaxed whitespace-pre-line text-white">
+            {noticeText}
+          </p>
+        ) : (
+          <p className="mt-2 text-xs leading-relaxed text-white">
+            {prefix}
+            <br />
+            매월 <span className="font-bold text-sub-yellow">{amount}</span>
+            {suffix}
+          </p>
+        )}
       </div>
     </div>
   );

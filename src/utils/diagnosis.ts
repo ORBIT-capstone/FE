@@ -1,4 +1,4 @@
-import { DETAIL_AGE_STEP, SUFFICIENT_SCORE } from "@/mocks/diagnosis";
+import { DETAIL_AGE_STEP } from "@/mocks/diagnosis";
 import type {
   AgeDetailRow,
   AssetFlowPoint,
@@ -32,9 +32,6 @@ export const getDiagnosisScore = (result: RetirementDiagnosisResponse) => {
 
   return Math.min(Math.round((survivedYears / targetYears) * 100), 100);
 };
-
-// 점수 기준 충분 여부, 상태 문구 분기용
-export const isSufficientScore = (score: number) => score >= SUFFICIENT_SCORE;
 
 // 기대수명 이후 구간 제외
 const getTimeline = (result: RetirementDiagnosisResponse) =>

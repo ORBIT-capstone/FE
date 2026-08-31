@@ -1,37 +1,53 @@
-import { useDiagnosisStore } from "@/stores/diagnosisStore";
+import { useEffect, useRef, useState } from "react";
+import { getApiErrorMessage } from "@/api/apiError";
+import useRecommendationsMutation from "@/queries/retirementPlan/useRecommendationsMutation";
+import { useAuthStore } from "@/stores/authStore";
 import { useProfileStore } from "@/stores/profileStore";
-import { useReemploymentStore } from "@/stores/reemploymentStore";
-import type { RetirementPlanBase } from "@/utils/retirementPlan";
-import { calculateRetirementPlan } from "@/utils/retirementPlan";
-
-const MAN_WON = 10_000;
+import { calculateAge } from "@/utils/age";
 
 export default function useRetirementPlan() {
-  const diagnosisInput = useDiagnosisStore((state) => state.input);
-  const diagnosisResult = useDiagnosisStore((state) => state.result);
-  const reemploymentResult = useReemploymentStore((state) => state.result);
+  const user = useAuthStore((state) => state.user);
   const privateInfo = useProfileStore((state) => state.privateInfo);
+  const { mutate: recommendMutate, data: plan, isPending } = useRecommendationsMutation();
 
-  // 최신 진단 우선, 재취업 감액 결과가 없으면 은퇴 자산 진단 결과 사용
-  let base: RetirementPlanBase | null = null;
+  const [errorMessage, setErrorMessage] = useState("");
+  const requestedRef = useRef(false);
 
-  if (reemploymentResult) {
-    base = {
-      currentAge: reemploymentResult.current_age,
-      targetAge: reemploymentResult.target_age,
-      assets: Number(privateInfo.assets) / MAN_WON,
-      monthlyExpense: Number(privateInfo.monthlyExpense) / MAN_WON,
-      monthlyIncome: reemploymentResult.reduced_monthly_pension / MAN_WON,
-    };
-  } else if (diagnosisInput && diagnosisResult) {
-    base = {
-      currentAge: diagnosisResult.current_age,
-      targetAge: diagnosisResult.target_age,
-      assets: Number(diagnosisInput.assets) / MAN_WON,
-      monthlyExpense: Number(diagnosisInput.monthlyExpense) / MAN_WON,
-      monthlyIncome: Number(diagnosisInput.monthlyPension) / MAN_WON,
-    };
-  }
+  // 마이페이지 저장값 기반 요청 데이터
+  const baseInfo = {
+    currentAge: calculateAge(user?.birthDate ?? ""),
+    gender: user?.gender ?? "female",
+    assets: Number(privateInfo.assets),
+    monthlyExpense: Number(privateInfo.monthlyExpense),
+    monthlyPension: Number(privateInfo.monthlyPension),
+  };
 
-  return { plan: base ? calculateRetirementPlan(base) : null };
+  const hasRequiredInfo = baseInfo.currentAge > 0 && baseInfo.monthlyExpense > 0;
+
+  // 진입 시 한 번만 추천 요청
+  useEffect(() => {
+    if (!hasRequiredInfo || requestedRef.current) return;
+
+    requestedRef.current = true;
+
+    recommendMutate(
+      {
+        // 현재 나이 매핑
+        current_age: baseInfo.currentAge,
+        // 월 생활비 매핑, 원 단위
+        monthly_expenses: baseInfo.monthlyExpense,
+        // 월 연금 매핑, 원 단위
+        monthly_pension: baseInfo.monthlyPension,
+        // 보유 자산 매핑, 원 단위
+        asset: baseInfo.assets,
+        gender: baseInfo.gender,
+      },
+      {
+        onError: (error) =>
+          setErrorMessage(getApiErrorMessage(error, "추천을 불러오지 못했습니다")),
+      },
+    );
+  });
+
+  return { plan, baseInfo, hasRequiredInfo, isPending, errorMessage };
 }

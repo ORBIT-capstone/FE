@@ -1,6 +1,7 @@
 import type { Gender } from "@/types/auth";
 
-export type DiagnosisStatus = "SUFFICIENT" | "INSUFFICIENT";
+// 준비 상태, 세 API 공통
+export type ReadinessStatus = "SUFFICIENT" | "MIDDLE" | "INSUFFICIENT";
 
 // 입력 화면 값, 금액은 원 단위 문자열
 export interface DiagnosisInput {
@@ -38,7 +39,7 @@ export interface RetirementDiagnosisResponse {
   depletion_age: number | null;
   depleted: boolean;
   target_age: number;
-  status: DiagnosisStatus;
+  status: ReadinessStatus;
   timeline: DiagnosisTimelinePoint[];
 }
 

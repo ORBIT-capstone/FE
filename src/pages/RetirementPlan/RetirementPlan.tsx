@@ -4,7 +4,6 @@ import ageIcon from "@/assets/icons/ageIcon.svg";
 import assetIcon from "@/assets/icons/assetIcon.svg";
 import BadIcon from "@/assets/icons/BadIcon.svg";
 import calenderIcon from "@/assets/icons/calenderIcon.svg";
-import extraIncomePrepareIcon from "@/assets/icons/extraIncomePrepareIcon.svg";
 import hyperPrepareIcon from "@/assets/icons/hyperPrepareIcon.svg";
 import MexpenseIcon from "@/assets/icons/MexpenseIcon.svg";
 import needIncomeIcon from "@/assets/icons/needIncomeIcon.svg";
@@ -24,36 +23,36 @@ import type { KeyInfoItem } from "@/components/RetirementPlan/KeyInfoList";
 import PlanAssetChart from "@/components/RetirementPlan/PlanAssetChart";
 import RecommendTypeCard from "@/components/RetirementPlan/RecommendTypeCard";
 import useRetirementPlan from "@/hooks/useRetirementPlan";
-import { IMPROVEMENT_TEXT, RECOMMEND_TYPE_TEXT, STATUS_LEVEL_TEXT } from "@/mocks/retirementPlan";
-import type { ImprovementKey } from "@/mocks/retirementPlan";
+import {
+  EXPENSE_ENOUGH_TEXT,
+  EXPENSE_PROPER_TEXT,
+  IMPROVEMENT_TEXT,
+  RECOMMEND_TYPE_TEXT,
+  STATUS_TEXT,
+} from "@/mocks/retirementPlan";
 import { useMyPlanStore } from "@/stores/myPlanStore";
-import { formatNumber } from "@/utils/format";
-import type { PlanRecommendType, PlanStatusLevel } from "@/utils/retirementPlan";
+import type { ReadinessStatus } from "@/types/diagnosis";
+import type { RecommendationType } from "@/types/retirementPlan";
+import { formatWon } from "@/utils/format";
+import { getExpenseAdjust, getScore, toAgeDetailRows, toAssetFlow } from "@/utils/retirementPlan";
 
 // 추천 유형별 아이콘
-const RECOMMEND_TYPE_ICON: Record<PlanRecommendType, string> = {
-  saving: savingPrepareIcon,
-  extraIncome: extraIncomePrepareIcon,
-  hybrid: hyperPrepareIcon,
+const RECOMMEND_TYPE_ICON: Record<RecommendationType, string> = {
+  SUFFICIENT: SmileIcon,
+  SAVING_ONLY: savingPrepareIcon,
+  SAVING_AND_INCOME: hyperPrepareIcon,
 };
 
-// 상태 단계별 아이콘
-const STATUS_LEVEL_ICON: Record<PlanStatusLevel, string> = {
-  good: SmileIcon,
-  soso: SoSoIcon,
-  bad: BadIcon,
-};
-
-// 개선안 항목별 아이콘
-const IMPROVEMENT_ICON: Record<ImprovementKey, string> = {
-  saving: SavingIcon,
-  income: needIncomeIcon,
-  expense: MexpenseIcon,
+// 준비 상태별 아이콘
+const STATUS_ICON: Record<ReadinessStatus, string> = {
+  SUFFICIENT: SmileIcon,
+  MIDDLE: SoSoIcon,
+  INSUFFICIENT: BadIcon,
 };
 
 export default function RetirementPlan() {
   const navigate = useNavigate();
-  const { plan } = useRetirementPlan();
+  const { plan, baseInfo, hasRequiredInfo, isPending, errorMessage } = useRetirementPlan();
   const savePlan = useMyPlanStore((state) => state.savePlan);
 
   // 연령별 예상 내역 펼침 여부
@@ -65,44 +64,51 @@ export default function RetirementPlan() {
     navigate("/");
   };
 
-  // 저장된 진단 내역이 없을 때 안내 화면
+  // 개인정보가 없거나 요청 실패·로딩 중 안내 화면
   if (!plan) {
+    const guideMessage = !hasRequiredInfo
+      ? "개인정보를 먼저 등록하시면\n맞춤 설계를 확인하실 수 있습니다"
+      : isPending
+        ? "맞춤 설계를 불러오는 중입니다"
+        : errorMessage || "맞춤 설계를 불러오지 못했습니다";
+
     return (
       <div className="min-h-dvh w-full bg-bg-base">
         <div className="mx-auto flex min-h-dvh w-full max-w-97.5 flex-col px-7 pb-32">
           <PageHeader title="맞춤 노후 설계" />
 
-          <p className="mt-20 text-center text-sm leading-relaxed text-muted">
-            저장된 진단 내역이 없습니다
-            <br />
-            진단을 먼저 진행하시면 맞춤 설계를 확인하실 수 있습니다
+          <p className="mt-20 text-center text-sm leading-relaxed whitespace-pre-line text-muted">
+            {guideMessage}
           </p>
         </div>
 
-        <FixedBottomBar>
-          <Button tone="yellow" onClick={() => navigate("/diagnosis")}>
-            진단하러 가기
-          </Button>
-        </FixedBottomBar>
+        {!isPending && (
+          <FixedBottomBar>
+            <Button tone="yellow" onClick={() => navigate("/mypage/private-info")}>
+              개인정보 등록하러 가기
+            </Button>
+          </FixedBottomBar>
+        )}
       </div>
     );
   }
 
-  const recommendText = RECOMMEND_TYPE_TEXT[plan.recommendType];
+  const recommendText = RECOMMEND_TYPE_TEXT[plan.recommendation_type];
+  const expenseAdjust = getExpenseAdjust(baseInfo.monthlyExpense);
 
-  const improvements: { key: ImprovementKey; amount: number }[] = [
-    { key: "saving", amount: plan.extraSaving },
-    { key: "income", amount: plan.extraIncome },
-    { key: "expense", amount: plan.expenseAdjust },
+  const improvements = [
+    { key: "saving" as const, icon: SavingIcon, amount: plan.required_saving },
+    { key: "income" as const, icon: needIncomeIcon, amount: plan.required_income },
+    { key: "expense" as const, icon: MexpenseIcon, amount: expenseAdjust.amount },
   ];
 
   const keyInfoItems: KeyInfoItem[] = [
-    { icon: ageIcon, label: "현재 나이", field: "current_age", value: `${plan.currentAge}세` },
+    { icon: ageIcon, label: "현재 나이", field: "current_age", value: `${plan.current_age}세` },
     {
       icon: SmileIcon,
       label: "목표 준비 상태 (추천 적용 시)",
       field: "target_status",
-      value: plan.targetStatus,
+      value: plan.target_status,
     },
     {
       icon: assetIcon,
@@ -114,7 +120,7 @@ export default function RetirementPlan() {
       icon: calenderIcon,
       label: "예상 고갈 나이",
       field: "depletion_age",
-      value: plan.depletionAge === null ? "-" : `${plan.depletionAge}세`,
+      value: plan.depletion_age === null ? "-" : `${plan.depletion_age}세`,
     },
   ];
 
@@ -127,21 +133,21 @@ export default function RetirementPlan() {
 
         <div className="mt-6 flex flex-col gap-6">
           <RecommendTypeCard
-            icon={RECOMMEND_TYPE_ICON[plan.recommendType]}
+            icon={RECOMMEND_TYPE_ICON[plan.recommendation_type]}
             title={recommendText.title}
             description={recommendText.description}
           />
 
           <CurrentStatusCard
-            status={plan.currentStatus}
-            description={STATUS_LEVEL_TEXT[plan.statusLevel]}
-            score={plan.score}
-            icon={STATUS_LEVEL_ICON[plan.statusLevel]}
+            status={plan.status}
+            description={STATUS_TEXT[plan.status]}
+            score={getScore(plan)}
+            icon={STATUS_ICON[plan.status]}
           />
 
           <section>
             <h2 className="text-base font-bold text-white">개선안 추천</h2>
-            <p className="mt-2 text-xs leading-relaxed text-muted">
+            <p className="mt-2 text-xs leading-relaxed break-keep text-muted">
               아래 세 가지 항목을 권장 수준 이상으로 확보하면 목표 연령까지 자산을 유지할 수
               있습니다.
             </p>
@@ -150,11 +156,19 @@ export default function RetirementPlan() {
               {improvements.map((improvement) => (
                 <ImprovementCard
                   key={improvement.key}
-                  icon={IMPROVEMENT_ICON[improvement.key]}
+                  icon={improvement.icon}
                   title={IMPROVEMENT_TEXT[improvement.key].title}
                   prefix={IMPROVEMENT_TEXT[improvement.key].prefix}
-                  amount={`${formatNumber(improvement.amount)}원`}
+                  amount={formatWon(improvement.amount)}
                   suffix={IMPROVEMENT_TEXT[improvement.key].suffix}
+                  // 조정이 필요 없을 때는 안내 문구로 대체
+                  noticeText={
+                    improvement.key === "expense" && expenseAdjust.level !== "adjust"
+                      ? expenseAdjust.level === "enough"
+                        ? EXPENSE_ENOUGH_TEXT
+                        : EXPENSE_PROPER_TEXT
+                      : undefined
+                  }
                 />
               ))}
             </div>
@@ -168,7 +182,7 @@ export default function RetirementPlan() {
             </div>
           </section>
 
-          <PlanAssetChart data={plan.assetFlow} />
+          <PlanAssetChart data={toAssetFlow(plan)} />
 
           <section>
             <button
@@ -182,7 +196,7 @@ export default function RetirementPlan() {
 
             {isDetailOpen && (
               <div className="mt-3">
-                <AgeDetailTable rows={plan.ageDetails} tone="yellow" />
+                <AgeDetailTable rows={toAgeDetailRows(plan)} tone="yellow" />
               </div>
             )}
           </section>

@@ -7,7 +7,7 @@ import {
   XAxis,
   YAxis,
 } from "recharts";
-import type { PlanAssetPoint } from "@/utils/retirementPlan";
+import type { PlanAssetPoint } from "@/types/retirementPlan";
 import { formatNumber } from "@/utils/format";
 
 const AXIS_COLOR = "#787f9a";
