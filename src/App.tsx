@@ -1,4 +1,5 @@
 import { BrowserRouter, Routes, Route } from "react-router-dom";
+import ScrollToTop from "./components/common/ScrollToTop";
 import SplashGate from "./components/common/SplashGate";
 import RootLayout from "./layout/RootLayout";
 import Diagnosis from "./pages/Diagnosis/Diagnosis";
@@ -24,6 +25,8 @@ import SimulationResult from "./pages/PensionScenario/SimulationResult";
 function App() {
   return (
     <BrowserRouter>
+      <ScrollToTop />
+
       <Routes>
         {/* 전역 레이아웃 적용 화면 */}
         <Route element={<RootLayout />}>
