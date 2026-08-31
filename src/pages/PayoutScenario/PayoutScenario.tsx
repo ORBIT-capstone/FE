@@ -1,0 +1,84 @@
+import ageIcon from "@/assets/icons/ageIcon.svg";
+import assetIcon from "@/assets/icons/assetIcon.svg";
+import expenseIcon from "@/assets/icons/expenseIcon.svg";
+import genderFemaleIcon from "@/assets/icons/genderFemaleIcon.svg";
+import genderMaleIcon from "@/assets/icons/genderMaleIcon.svg";
+import Button from "@/components/common/button/Button";
+import Loading from "@/components/common/Loading";
+import MyInfoCard from "@/components/common/card/MyInfoCard";
+import type { MyInfoItem } from "@/components/common/card/MyInfoCard";
+import ChipGroup from "@/components/common/chip/ChipGroup";
+import type { ChipItem } from "@/components/common/chip/ChipGroup";
+import PageHeader from "@/components/common/header/PageHeader";
+import usePayoutScenarioForm from "@/hooks/usePayoutScenarioForm";
+import { formatManWon } from "@/utils/format";
+
+const EARLY_YEAR_ITEMS: ChipItem<number>[] = [1, 2, 3, 4, 5].map((year) => ({
+  label: `${year}년`,
+  value: year,
+}));
+
+const GENDER_LABEL = { male: "남성", female: "여성" };
+
+// 성별에 따른 아이콘 분기
+const GENDER_ICON = { male: genderMaleIcon, female: genderFemaleIcon };
+
+export default function PayoutScenario() {
+  const {
+    baseInfo,
+    earlyYears,
+    isPending,
+    isSubmittable,
+    errorMessage,
+    setEarlyYears,
+    handleSubmit,
+    handleEditClick,
+  } = usePayoutScenarioForm();
+
+  // 회원 정보·개인정보 기반 내 정보
+  const myInfoItems: [MyInfoItem, MyInfoItem, MyInfoItem, MyInfoItem] = [
+    { icon: ageIcon, label: "현재 나이", value: `${baseInfo.currentAge}세` },
+    { icon: assetIcon, label: "보유 자산", value: formatManWon(baseInfo.assets) },
+    { icon: expenseIcon, label: "월 생활비", value: formatManWon(baseInfo.monthlyExpense) },
+    {
+      icon: GENDER_ICON[baseInfo.gender],
+      label: "성별",
+      value: GENDER_LABEL[baseInfo.gender],
+    },
+  ];
+
+  return (
+    <div className="min-h-dvh w-full bg-bg-base">
+      <div className="mx-auto flex min-h-dvh w-full max-w-97.5 flex-col px-7 pb-10">
+        <PageHeader title="수령방식별 시나리오 비교" />
+
+        <p className="mt-4 text-sm leading-relaxed break-keep text-justify text-muted">
+          정상·조기·일시금·분할 수령에 따른 자산 변화를 비교하고, 나에게 맞는 수령 방식을
+          확인해보세요.
+        </p>
+
+        <div className="mt-8">
+          <MyInfoCard items={myInfoItems} onEditClick={handleEditClick} />
+        </div>
+
+        <div className="mt-8">
+          <h2 className="text-base font-bold text-white">조기수령 연수 선택</h2>
+          <p className="mt-2 text-sm text-muted">몇 년 일찍 연금을 수령할지 선택해주세요</p>
+
+          <div className="mt-4">
+            <ChipGroup items={EARLY_YEAR_ITEMS} value={earlyYears} onChange={setEarlyYears} />
+          </div>
+        </div>
+
+        {errorMessage && (
+          <p className="mt-6 text-sm whitespace-pre-line text-btn-active">{errorMessage}</p>
+        )}
+
+        <Button onClick={handleSubmit} disabled={!isSubmittable} className="mt-auto">
+          {isPending ? "비교 중..." : "시나리오 비교하기"}
+        </Button>
+      </div>
+      {isPending && <Loading variant="overlay" message="수령방식을 비교하는 중입니다" />}
+    </div>
+  );
+}

@@ -1,1 +1,94 @@
+@import url("https://cdn.jsdelivr.net/gh/orioncactus/pretendard@v1.3.9/dist/web/variable/pretendardvariable-dynamic-subset.min.css");
 @import "tailwindcss";
+
+@theme {
+  --font-sans: "Pretendard Variable", Pretendard, system-ui, sans-serif;
+
+  --color-bg-base: #111727;
+  --color-card: #1a2138;
+  --color-title: #f5d9d5;
+  --color-btn-disabled: #a8a8a8;
+  --color-btn-active: #de8c98;
+  --color-btn-pressed: #a16b73;
+  --color-field: #fbfbfb;
+  --color-field-dark: #1e2235;
+  --color-muted: #787f9a;
+  --color-back-bg: #222639;
+  --color-back-icon: #b8bdd6;
+  --color-btn-neutral: #5c6381;
+
+  --color-mint: #8ad5b6;
+  --color-mint-pressed: #6bb797;
+  --color-sub-yellow: #fdd58c;
+  --color-sub-yellow-pressed: #d9b476;
+
+  --color-scenario-normal: #de8c98;
+  --color-scenario-early: #8aaff7;
+  --color-scenario-lump: #fdd58c;
+  --color-scenario-split: #8ad5b6;
+}
+
+/* 홈 배너 그라데이션 1층 */
+@utility banner-layer-1 {
+  background-image: linear-gradient(
+    to bottom right,
+    #263253 5%,
+    #304061 24%,
+    #6f5b75 66%,
+    #de8c98 100%
+  );
+}
+
+/* 홈 배너 그라데이션 2층 */
+@utility banner-layer-2 {
+  background-image: linear-gradient(to bottom, #9f747a 0%, #111727 100%);
+}
+
+/* 진단 결과 강조 문구 그라데이션 */
+@utility text-gradient-score {
+  background-image: linear-gradient(to right, #de8c98, #de5481);
+  -webkit-background-clip: text;
+  background-clip: text;
+  color: transparent;
+}
+
+/* 재취업 감액 결과 강조 문구 그라데이션 */
+@utility text-gradient-score-mint {
+  background-image: linear-gradient(to right, #2cffa8, #8ad5b6);
+  -webkit-background-clip: text;
+  background-clip: text;
+  color: transparent;
+}
+
+/* 중간 단계 강조 문구 그라데이션 */
+@utility text-gradient-score-yellow {
+  background-image: linear-gradient(to right, #ffe9bc, #fdd58c);
+  -webkit-background-clip: text;
+  background-clip: text;
+  color: transparent;
+}
+
+/* 맞춤 노후 설계 추천 유형 카드 그라데이션 */
+@utility bg-gradient-plan {
+  background-image: linear-gradient(to bottom right, #fdd58c, #f9c051);
+}
+
+/* 하단 고정 버튼 영역 블러·그림자 */
+@utility fixed-bottom-blur {
+  background-image: linear-gradient(to top, rgba(17, 23, 39, 0.92), rgba(17, 23, 39, 0.5));
+  backdrop-filter: blur(10px);
+  -webkit-backdrop-filter: blur(10px);
+  box-shadow: 0 -8px 24px rgba(17, 23, 39, 0.55);
+}
+
+/* 플래시 화면 배경 그라데이션 */
+@utility bg-gradient-splash {
+  background-image: linear-gradient(
+    to bottom,
+    #0a0e19 0%,
+    #192238 47%,
+    #3d5a4e 70%,
+    #745d6e 83%,
+    #cf98a4 100%
+  );
+}
