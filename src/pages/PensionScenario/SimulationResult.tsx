@@ -2,6 +2,7 @@ import { Navigate, useNavigate, useParams } from "react-router-dom";
 import { getApiErrorMessage } from "@/api/apiError";
 import astronaut from "@/assets/images/astronut2.svg";
 import Button from "@/components/common/button/Button";
+import Loading from "@/components/common/Loading";
 import PageHeader from "@/components/common/header/PageHeader";
 import ResultPlaceholder from "@/components/common/result/ResultPlaceholder";
 import useDiagnosisResult from "@/hooks/useDiagnosisResult";
@@ -28,7 +29,9 @@ export default function SimulationResult() {
     error: saveError,
   } = useSaveDiagnosisMutation("EMPLOYEE_PENSION");
 
-  if (isLoading) return <ResultPlaceholder title={PAGE_TITLE} message="결과를 불러오는 중입니다" />;
+  if (isLoading) {
+    return <ResultPlaceholder title={PAGE_TITLE} message="데이터를 불러오는 중입니다" isLoading />;
+  }
 
   if (isSaved && !result) {
     return (
@@ -92,6 +95,7 @@ export default function SimulationResult() {
           </Button>
         </div>
       </div>
+      {isPending && <Loading variant="overlay" message="결과를 저장하는 중입니다" />}
     </div>
   );
 }

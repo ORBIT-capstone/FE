@@ -1,5 +1,6 @@
 import { useNavigate } from "react-router-dom";
 import Button from "@/components/common/button/Button";
+import Loading from "@/components/common/Loading";
 import PageHeader from "@/components/common/header/PageHeader";
 import Input from "@/components/common/input/Input";
 import usePrivateInfoForm from "@/hooks/usePrivateInfoForm";
@@ -86,6 +87,7 @@ export default function PrivateInfoEdit() {
           {isPending ? "저장 중..." : "저장하기"}
         </Button>
       </div>
+      {isPending && <Loading variant="overlay" message="개인정보를 저장하는 중입니다" />}
     </div>
   );
 }

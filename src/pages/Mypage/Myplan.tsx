@@ -2,6 +2,7 @@ import { useState } from "react";
 import { useNavigate } from "react-router-dom";
 import { getApiErrorMessage } from "@/api/apiError";
 import InfoCard from "@/components/common/card/InfoCard";
+import Loading from "@/components/common/Loading";
 import PageHeader from "@/components/common/header/PageHeader";
 import TabBar from "@/components/common/tab/TabBar";
 import type { TabItem } from "@/components/common/tab/TabBar";
@@ -37,11 +38,9 @@ export default function Myplan() {
   });
 
   // 목록 상태별 안내 문구
-  const emptyMessage = isLoading
-    ? "저장된 진단 내역을 불러오는 중입니다"
-    : error
-      ? getApiErrorMessage(error, "진단 내역을 불러오지 못했습니다")
-      : "저장된 진단 내역이 없습니다";
+  const emptyMessage = error
+    ? getApiErrorMessage(error, "진단 내역을 불러오지 못했습니다")
+    : "저장된 진단 내역이 없습니다";
 
   return (
     <div className="min-h-dvh w-full bg-bg-base">
@@ -54,7 +53,9 @@ export default function Myplan() {
           <TabBar items={TAB_ITEMS} value={selectedTab} onChange={setSelectedTab} />
         </div>
 
-        {filteredPlans.length === 0 ? (
+        {isLoading ? (
+          <Loading />
+        ) : filteredPlans.length === 0 ? (
           <p className="mt-20 text-center text-sm whitespace-pre-line text-muted">{emptyMessage}</p>
         ) : (
           <div className="mt-8 flex flex-col gap-4">

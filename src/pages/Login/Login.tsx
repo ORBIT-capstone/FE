@@ -1,5 +1,6 @@
 import { Link } from "react-router-dom";
 import Button from "@/components/common/button/Button";
+import Loading from "@/components/common/Loading";
 import Input from "@/components/common/input/Input";
 import Modal from "@/components/common/modal/Modal";
 import useLoginForm from "@/hooks/useLoginForm";
@@ -93,6 +94,7 @@ export default function Login() {
         onCancel={closeLoginError}
         onConfirm={goSignup}
       />
+      {isPending && <Loading variant="overlay" message="로그인 중입니다" />}
     </div>
   );
 }

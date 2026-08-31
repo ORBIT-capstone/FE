@@ -1,6 +1,7 @@
 import { Navigate, useNavigate } from "react-router-dom";
 import { getApiErrorMessage } from "@/api/apiError";
 import Button from "@/components/common/button/Button";
+import Loading from "@/components/common/Loading";
 import PageHeader from "@/components/common/header/PageHeader";
 import ResultPlaceholder from "@/components/common/result/ResultPlaceholder";
 import AssetFlowChart from "@/components/PayoutScenario/AssetFlowChart";
@@ -32,7 +33,9 @@ export default function PayoutScenarioResult() {
     error: saveError,
   } = useSaveDiagnosisMutation("RECEIPT_SCENARIOS");
 
-  if (isLoading) return <ResultPlaceholder title={PAGE_TITLE} message="결과를 불러오는 중입니다" />;
+  if (isLoading) {
+    return <ResultPlaceholder title={PAGE_TITLE} message="데이터를 불러오는 중입니다" isLoading />;
+  }
 
   if (isSaved && !result) {
     return (
@@ -91,6 +94,7 @@ export default function PayoutScenarioResult() {
           </Button>
         )}
       </div>
+      {isPending && <Loading variant="overlay" message="결과를 저장하는 중입니다" />}
     </div>
   );
 }

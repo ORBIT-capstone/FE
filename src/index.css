@@ -80,3 +80,15 @@
   -webkit-backdrop-filter: blur(10px);
   box-shadow: 0 -8px 24px rgba(17, 23, 39, 0.55);
 }
+
+/* 플래시 화면 배경 그라데이션 */
+@utility bg-gradient-splash {
+  background-image: linear-gradient(
+    to bottom,
+    #0a0e19 0%,
+    #192238 47%,
+    #3d5a4e 70%,
+    #745d6e 83%,
+    #cf98a4 100%
+  );
+}

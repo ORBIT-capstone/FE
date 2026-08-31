@@ -1,5 +1,5 @@
 import HomeHeader from "@/components/Home/HomeHeader";
-import StarBackground from "@/components/Home/StarBackground";
+import StarBackground from "@/components/common/StarBackground";
 import UserTypeToggle from "@/components/Home/UserTypeToggle";
 import EmployedHome from "@/pages/Home/EmployedHome";
 import RetiredHome from "@/pages/Home/RetiredHome";

@@ -3,6 +3,7 @@ import assetIcon from "@/assets/icons/assetIcon.svg";
 import expenseIcon from "@/assets/icons/expenseIcon.svg";
 import mPensionIcon from "@/assets/icons/MpenisonIcon.svg";
 import Button from "@/components/common/button/Button";
+import Loading from "@/components/common/Loading";
 import FixedBottomBar from "@/components/common/button/FixedBottomBar";
 import MyInfoCard from "@/components/common/card/MyInfoCard";
 import type { MyInfoItem } from "@/components/common/card/MyInfoCard";
@@ -67,6 +68,7 @@ export default function Reemployment() {
           {isPending ? "계산 중..." : "재취업 연금 감액 계산하기"}
         </Button>
       </FixedBottomBar>
+      {isPending && <Loading variant="overlay" message="연금 감액을 계산하는 중입니다" />}
     </div>
   );
 }

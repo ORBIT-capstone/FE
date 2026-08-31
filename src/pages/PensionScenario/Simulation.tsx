@@ -1,4 +1,5 @@
 import Button from "@/components/common/button/Button";
+import Loading from "@/components/common/Loading";
 import PageHeader from "@/components/common/header/PageHeader";
 import Input from "@/components/common/input/Input";
 import useSimulationForm from "@/hooks/useSimulationForm";
@@ -85,6 +86,7 @@ export default function Simulation() {
           {isPending ? "계산 중..." : "시뮬레이션 실행"}
         </Button>
       </div>
+      {isPending && <Loading variant="overlay" message="연금을 계산하는 중입니다" />}
     </div>
   );
 }

@@ -1,4 +1,5 @@
 import { BrowserRouter, Routes, Route } from "react-router-dom";
+import SplashGate from "./components/common/SplashGate";
 import RootLayout from "./layout/RootLayout";
 import Diagnosis from "./pages/Diagnosis/Diagnosis";
 import DiagnosisResult from "./pages/Diagnosis/DiagnosisResult";
@@ -15,6 +16,7 @@ import ReemploymentDetail from "./pages/Reemployment/ReemploymentDetail";
 import ReemploymentResult from "./pages/Reemployment/ReemploymentResult";
 import RetirementPlan from "./pages/RetirementPlan/RetirementPlan";
 import Signup from "./pages/Signup/Signup";
+import Splash from "./pages/Splash/Splash";
 import Simulation from "./pages/PensionScenario/Simulation";
 import SimulationDetail from "./pages/PensionScenario/SimulationDetail";
 import SimulationResult from "./pages/PensionScenario/SimulationResult";
@@ -25,13 +27,21 @@ function App() {
       <Routes>
         {/* 전역 레이아웃 적용 화면 */}
         <Route element={<RootLayout />}>
-          <Route path="/" element={<Home />} />
+          <Route
+            path="/"
+            element={
+              <SplashGate>
+                <Home />
+              </SplashGate>
+            }
+          />
           <Route path="/add" element={<></>} />
           <Route path="/mypage" element={<Mypage />} />
           <Route path="/mypage/plan" element={<Myplan />} />
         </Route>
 
         {/* 전역 레이아웃 미적용 화면 */}
+        <Route path="/splash" element={<Splash />} />
         <Route path="/login" element={<Login />} />
         <Route path="/signup" element={<Signup />} />
         <Route path="/mypage/profile" element={<ProfileEdit />} />
