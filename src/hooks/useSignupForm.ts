@@ -1,7 +1,7 @@
 import { useState } from "react";
 import type { ChangeEvent, FormEvent } from "react";
 import { useNavigate } from "react-router-dom";
-import { getApiErrorMessage } from "@/api/auth/authError";
+import { getApiErrorMessage } from "@/api/apiError";
 import useSignupMutation from "@/queries/auth/useSignupMutation";
 import type { Gender } from "@/types/auth";
 import { toApiGender } from "@/types/auth";

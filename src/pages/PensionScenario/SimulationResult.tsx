@@ -5,7 +5,8 @@ import PageHeader from "@/components/common/header/PageHeader";
 import { useAuthStore } from "@/stores/authStore";
 import { useMyPlanStore } from "@/stores/myPlanStore";
 import { useSimulationStore } from "@/stores/simulationStore";
-import { formatNumber } from "@/utils/format";
+import { formatNumber, formatServiceMonths } from "@/utils/format";
+import { isPensionEligible } from "@/utils/simulation";
 
 export default function SimulationResult() {
   const navigate = useNavigate();
@@ -16,8 +17,9 @@ export default function SimulationResult() {
   // 결과 없이 직접 진입 시 입력 화면 복귀
   if (!result) return <Navigate to="/pension-scenario" replace />;
 
-  const amountLabel = result.isPensionEligible ? "예상 월 연금액은" : "예상 퇴직일시금은";
-  const amount = result.isPensionEligible ? result.monthlyPension : result.lumpSum;
+  const isEligible = isPensionEligible(result.retire_months);
+  const amountLabel = isEligible ? "예상 월 연금액은" : "예상 퇴직일시금은";
+  const amount = isEligible ? result.monthly_pension : result.lump_sum;
 
   // 마이플랜 내역 저장 후 홈 복귀 처리, 추후 API 저장 연결 지점
   const handleSave = () => {
@@ -31,9 +33,12 @@ export default function SimulationResult() {
         <PageHeader title="연금 시뮬레이션 결과" />
 
         <h2 className="mt-20 text-center text-2xl leading-relaxed font-medium text-white">
-          {name}님의 총 재직 월수는{" "}
-          <span className="text-3xl font-bold text-btn-active">{result.totalServiceYears}</span>
-          년이며
+          {name}님의 총 재직 월수는
+          <br />
+          <span className="text-3xl font-bold text-btn-active">
+            {formatServiceMonths(result.retire_months)}
+          </span>
+          이며
           <br />
           {amountLabel}
           <br />

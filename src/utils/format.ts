@@ -12,8 +12,12 @@ export const formatManCheonWon = (value: number) => {
   return cheon === 0 ? `${formatNumber(man)}만 원` : `${formatNumber(man)}만 ${cheon}천 원`;
 };
 
-// 근속월수 구간 표기
-export const formatServicePeriod = (years: number) => `${years * 12}개월(${years}년)`;
+// 원 단위 표기
+export const formatWon = (value: number) => `${formatNumber(value)}원`;
+
+// 근속월수 표기
+export const formatServiceMonths = (months: number) =>
+  `${formatNumber(months)}개월(${Math.floor(months / 12)}년)`;
 
 // YYYY.MM.DD 표기
 export const formatDate = (date: Date) =>

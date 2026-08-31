@@ -1,6 +1,6 @@
 import { useState } from "react";
 import type { ChangeEvent } from "react";
-import { getApiErrorMessage } from "@/api/auth/authError";
+import { getApiErrorMessage } from "@/api/apiError";
 import useUpdateMeMutation from "@/queries/auth/useUpdateMeMutation";
 import { useAuthStore } from "@/stores/authStore";
 import type { Gender } from "@/types/auth";
