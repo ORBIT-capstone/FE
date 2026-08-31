@@ -4,6 +4,7 @@ import expenseIcon from "@/assets/icons/expenseIcon.svg";
 import genderFemaleIcon from "@/assets/icons/genderFemaleIcon.svg";
 import genderMaleIcon from "@/assets/icons/genderMaleIcon.svg";
 import Button from "@/components/common/button/Button";
+import Loading from "@/components/common/Loading";
 import MyInfoCard from "@/components/common/card/MyInfoCard";
 import type { MyInfoItem } from "@/components/common/card/MyInfoCard";
 import ChipGroup from "@/components/common/chip/ChipGroup";
@@ -77,6 +78,7 @@ export default function PayoutScenario() {
           {isPending ? "비교 중..." : "시나리오 비교하기"}
         </Button>
       </div>
+      {isPending && <Loading variant="overlay" message="수령방식을 비교하는 중입니다" />}
     </div>
   );
 }

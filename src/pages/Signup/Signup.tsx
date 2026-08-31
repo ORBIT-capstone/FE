@@ -1,4 +1,5 @@
 import Button from "@/components/common/button/Button";
+import Loading from "@/components/common/Loading";
 import Input from "@/components/common/input/Input";
 import BirthDateField from "@/components/common/birthDate/BirthDateField";
 import GenderSelect from "@/components/common/gender/GenderSelect";
@@ -88,6 +89,7 @@ export default function Signup() {
           </Button>
         </form>
       </div>
+      {isPending && <Loading variant="overlay" message="회원가입을 처리하는 중입니다" />}
     </div>
   );
 }

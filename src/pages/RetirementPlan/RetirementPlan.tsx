@@ -13,6 +13,7 @@ import savingPrepareIcon from "@/assets/icons/savingPrepareIcon.svg";
 import SmileIcon from "@/assets/icons/SmileIcon.svg";
 import SoSoIcon from "@/assets/icons/SoSoIcon.svg";
 import Button from "@/components/common/button/Button";
+import Loading from "@/components/common/Loading";
 import FixedBottomBar from "@/components/common/button/FixedBottomBar";
 import PageHeader from "@/components/common/header/PageHeader";
 import ChevronIcon from "@/components/common/icon/ChevronIcon";
@@ -94,6 +95,7 @@ export default function RetirementPlan() {
 
   // 개인정보가 없거나 요청 실패·로딩 중 안내 화면
   if (!plan) {
+    const isGuideLoading = isSaved ? isSavedLoading : isPending;
     const guideMessage = isSaved
       ? isSavedLoading
         ? "저장된 설계를 불러오는 중입니다"
@@ -109,9 +111,13 @@ export default function RetirementPlan() {
         <div className="mx-auto flex min-h-dvh w-full max-w-97.5 flex-col px-7 pb-32">
           <PageHeader title="맞춤 노후 설계" />
 
-          <p className="mt-20 text-center text-sm leading-relaxed whitespace-pre-line text-muted">
-            {guideMessage}
-          </p>
+          {isGuideLoading ? (
+            <Loading message={guideMessage} />
+          ) : (
+            <p className="mt-20 text-center text-sm leading-relaxed whitespace-pre-line text-muted">
+              {guideMessage}
+            </p>
+          )}
         </div>
 
         {!isSaved && !isPending && (
@@ -249,6 +255,7 @@ export default function RetirementPlan() {
           </Button>
         </FixedBottomBar>
       )}
+      {isSaving && <Loading variant="overlay" message="노후 설계를 저장하는 중입니다" />}
     </div>
   );
 }

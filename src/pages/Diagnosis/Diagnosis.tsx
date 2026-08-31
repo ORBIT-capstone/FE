@@ -1,4 +1,5 @@
 import Button from "@/components/common/button/Button";
+import Loading from "@/components/common/Loading";
 import GenderSelect from "@/components/common/gender/GenderSelect";
 import PageHeader from "@/components/common/header/PageHeader";
 import Input from "@/components/common/input/Input";
@@ -80,6 +81,7 @@ export default function Diagnosis() {
           {isPending ? "진단 중..." : "진단하기"}
         </Button>
       </div>
+      {isPending && <Loading variant="overlay" message="은퇴 자산을 진단하는 중입니다" />}
     </div>
   );
 }

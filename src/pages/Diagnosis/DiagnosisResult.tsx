@@ -1,6 +1,7 @@
 import { Navigate, useNavigate } from "react-router-dom";
 import { getApiErrorMessage } from "@/api/apiError";
 import Button from "@/components/common/button/Button";
+import Loading from "@/components/common/Loading";
 import PageHeader from "@/components/common/header/PageHeader";
 import AgeDetailTable from "@/components/common/result/AgeDetailTable";
 import AssetChangeChart from "@/components/common/result/AssetChangeChart";
@@ -53,7 +54,9 @@ export default function DiagnosisResult() {
     error: saveError,
   } = useSaveDiagnosisMutation("RETIREMENT_ASSET");
 
-  if (isLoading) return <ResultPlaceholder title={PAGE_TITLE} message="결과를 불러오는 중입니다" />;
+  if (isLoading) {
+    return <ResultPlaceholder title={PAGE_TITLE} message="데이터를 불러오는 중입니다" isLoading />;
+  }
 
   if (isSaved && !result) {
     return (
@@ -124,6 +127,7 @@ export default function DiagnosisResult() {
           </Button>
         )}
       </div>
+      {isPending && <Loading variant="overlay" message="결과를 저장하는 중입니다" />}
     </div>
   );
 }

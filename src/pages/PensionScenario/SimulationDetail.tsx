@@ -17,7 +17,9 @@ export default function SimulationDetail() {
     calculatedResult,
   );
 
-  if (isLoading) return <ResultPlaceholder title={PAGE_TITLE} message="결과를 불러오는 중입니다" />;
+  if (isLoading) {
+    return <ResultPlaceholder title={PAGE_TITLE} message="데이터를 불러오는 중입니다" isLoading />;
+  }
 
   if (isSaved && !result) {
     return (

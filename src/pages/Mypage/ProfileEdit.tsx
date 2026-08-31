@@ -1,6 +1,7 @@
 import { useNavigate } from "react-router-dom";
 import BirthDateField from "@/components/common/birthDate/BirthDateField";
 import Button from "@/components/common/button/Button";
+import Loading from "@/components/common/Loading";
 import PageHeader from "@/components/common/header/PageHeader";
 import Input from "@/components/common/input/Input";
 import GenderSelect from "@/components/common/gender/GenderSelect";
@@ -49,6 +50,7 @@ export default function ProfileEdit() {
           {isPending ? "저장 중..." : "저장하기"}
         </Button>
       </div>
+      {isPending && <Loading variant="overlay" message="회원 정보를 저장하는 중입니다" />}
     </div>
   );
 }

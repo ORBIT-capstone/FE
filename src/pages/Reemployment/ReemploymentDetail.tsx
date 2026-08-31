@@ -1,6 +1,7 @@
 import { Navigate, useNavigate } from "react-router-dom";
 import { getApiErrorMessage } from "@/api/apiError";
 import Button from "@/components/common/button/Button";
+import Loading from "@/components/common/Loading";
 import FixedBottomBar from "@/components/common/button/FixedBottomBar";
 import PageHeader from "@/components/common/header/PageHeader";
 import AgeDetailTable from "@/components/common/result/AgeDetailTable";
@@ -31,7 +32,9 @@ export default function ReemploymentDetail() {
     error: saveError,
   } = useSaveDiagnosisMutation("PENSION_REDUCTION");
 
-  if (isLoading) return <ResultPlaceholder title={PAGE_TITLE} message="결과를 불러오는 중입니다" />;
+  if (isLoading) {
+    return <ResultPlaceholder title={PAGE_TITLE} message="데이터를 불러오는 중입니다" isLoading />;
+  }
 
   if (isSaved && !result) {
     return (
@@ -109,6 +112,7 @@ export default function ReemploymentDetail() {
           맞춤 노후 설계가기
         </Button>
       </FixedBottomBar>
+      {isPending && <Loading variant="overlay" message="결과를 저장하는 중입니다" />}
     </div>
   );
 }
