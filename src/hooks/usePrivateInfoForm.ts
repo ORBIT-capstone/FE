@@ -29,7 +29,7 @@ export default function usePrivateInfoForm() {
 
   // 저장 시에만 전역 값 갱신
   const handleSave = () => {
-    setPrivateInfo({ assets, monthlyExpense, serviceYears });
+    setPrivateInfo({ ...privateInfo, assets, monthlyExpense, serviceYears });
   };
 
   return {

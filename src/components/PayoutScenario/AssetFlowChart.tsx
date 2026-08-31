@@ -1,6 +1,6 @@
 import { CartesianGrid, Line, LineChart, ResponsiveContainer, XAxis, YAxis } from "recharts";
-import type { AssetFlowPoint } from "@/mocks/payoutScenario";
 import { PAYOUT_COLOR } from "@/mocks/payoutScenario";
+import type { AssetFlowPoint } from "@/types/payoutScenario";
 
 const AXIS_COLOR = "#787f9a";
 

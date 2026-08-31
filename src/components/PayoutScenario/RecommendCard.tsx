@@ -1,4 +1,4 @@
-import type { PayoutMethod } from "@/mocks/payoutScenario";
+import type { PayoutMethod } from "@/types/payoutScenario";
 
 // 수령방식별 배너 색상, 배경은 20% 투명도
 const BANNER_CLASS: Record<PayoutMethod, string> = {
@@ -18,7 +18,8 @@ const LABEL_CLASS: Record<PayoutMethod, string> = {
 interface RecommendCardProps {
   method: PayoutMethod;
   label: string;
-  depletionAge: number;
+  // 고갈되지 않으면 null
+  depletionAge: number | null;
 }
 
 export default function RecommendCard({ method, label, depletionAge }: RecommendCardProps) {
@@ -31,7 +32,9 @@ export default function RecommendCard({ method, label, depletionAge }: Recommend
         <p className={`mt-1 text-2xl font-bold ${LABEL_CLASS[method]}`}>{label}</p>
       </div>
 
-      <p className="text-2xl font-bold text-white">{depletionAge}세</p>
+      <p className="text-2xl font-bold text-white">
+        {depletionAge === null ? "고갈없음" : `${depletionAge}세`}
+      </p>
     </section>
   );
 }

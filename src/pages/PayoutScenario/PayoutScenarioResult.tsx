@@ -1,25 +1,30 @@
-import { useNavigate } from "react-router-dom";
+import { Navigate, useNavigate } from "react-router-dom";
 import Button from "@/components/common/button/Button";
 import PageHeader from "@/components/common/header/PageHeader";
 import AssetFlowChart from "@/components/PayoutScenario/AssetFlowChart";
 import RecommendCard from "@/components/PayoutScenario/RecommendCard";
 import ScenarioTable from "@/components/PayoutScenario/ScenarioTable";
-import {
-  MOCK_ASSET_FLOW,
-  MOCK_PAYOUT_SCENARIOS,
-  MOCK_RECOMMENDED_METHOD,
-} from "@/mocks/payoutScenario";
 import { useMyPlanStore } from "@/stores/myPlanStore";
 import { usePayoutScenarioStore } from "@/stores/payoutScenarioStore";
+import {
+  RECOMMEND_LABEL,
+  SCENARIO_METHOD,
+  toAssetFlow,
+  toScenarioRows,
+} from "@/utils/payoutScenario";
 
 export default function PayoutScenarioResult() {
   const navigate = useNavigate();
   const earlyYears = usePayoutScenarioStore((state) => state.earlyYears);
+  const result = usePayoutScenarioStore((state) => state.result);
   const savePlan = useMyPlanStore((state) => state.savePlan);
 
-  const recommended = MOCK_PAYOUT_SCENARIOS.find(
-    (scenario) => scenario.method === MOCK_RECOMMENDED_METHOD,
-  );
+  // 결과 없이 직접 진입 시 입력 화면 복귀
+  if (!result) return <Navigate to="/payout-scenario" replace />;
+
+  const rows = toScenarioRows(result);
+  const recommendedMethod = SCENARIO_METHOD[result.best_scenario];
+  const recommended = rows.find((row) => row.method === recommendedMethod);
 
   // 마이플랜 내역 저장 후 홈 복귀 처리, 추후 API 저장 연결 지점
   const handleSave = () => {
@@ -36,20 +41,20 @@ export default function PayoutScenarioResult() {
           <div className="mt-8">
             <RecommendCard
               method={recommended.method}
-              label={recommended.recommendLabel}
+              label={RECOMMEND_LABEL[recommended.method]}
               depletionAge={recommended.depletionAge}
             />
           </div>
         )}
 
         <div className="mt-8">
-          <ScenarioTable scenarios={MOCK_PAYOUT_SCENARIOS} />
+          <ScenarioTable scenarios={rows} />
         </div>
 
         <h2 className="mt-10 text-base font-bold text-white">자산 흐름 비교</h2>
 
         <div className="mt-4">
-          <AssetFlowChart data={MOCK_ASSET_FLOW} earlyYears={earlyYears} />
+          <AssetFlowChart data={toAssetFlow(result)} earlyYears={earlyYears} />
         </div>
 
         <Button onClick={handleSave} className="mt-10">
