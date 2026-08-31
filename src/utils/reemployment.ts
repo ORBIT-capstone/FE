@@ -6,7 +6,7 @@ import {
   REDUCTION_BRACKETS,
   REEMPLOYMENT_YEARS,
 } from "@/mocks/reemployment";
-import type { Gender } from "@/stores/profileStore";
+import type { Gender } from "@/types/auth";
 import type { AgeDetailRow, AssetFlowPoint } from "@/utils/diagnosis";
 
 const MAN_WON = 10_000;

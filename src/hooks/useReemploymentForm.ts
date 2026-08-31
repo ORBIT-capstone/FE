@@ -2,6 +2,7 @@ import { useState } from "react";
 import type { ChangeEvent } from "react";
 import { useNavigate } from "react-router-dom";
 import { MOCK_MONTHLY_PENSION } from "@/mocks/reemployment";
+import { useAuthStore } from "@/stores/authStore";
 import { useProfileStore } from "@/stores/profileStore";
 import { useReemploymentStore } from "@/stores/reemploymentStore";
 import { calculateAge } from "@/utils/age";
@@ -14,7 +15,7 @@ const toNumericValue = (value: string) => value.replace(/[^0-9]/g, "");
 
 export default function useReemploymentForm() {
   const navigate = useNavigate();
-  const profile = useProfileStore((state) => state.profile);
+  const user = useAuthStore((state) => state.user);
   const privateInfo = useProfileStore((state) => state.privateInfo);
   const setReemployment = useReemploymentStore((state) => state.setReemployment);
 
@@ -23,7 +24,7 @@ export default function useReemploymentForm() {
 
   // 마이페이지 저장값 기반 내 정보, 금액은 원 단위
   const baseInfo = {
-    currentAge: calculateAge(profile.birthDate),
+    currentAge: calculateAge(user?.birthDate ?? ""),
     assets: Number(privateInfo.assets),
     monthlyExpense: Number(privateInfo.monthlyExpense),
     monthlyPension: MOCK_MONTHLY_PENSION,
@@ -44,7 +45,7 @@ export default function useReemploymentForm() {
       monthlyPension: String(baseInfo.monthlyPension / MAN_WON),
       assets: String(baseInfo.assets / MAN_WON),
       monthlyIncome,
-      gender: profile.gender,
+      gender: user?.gender ?? "female",
     };
 
     setReemployment(input, calculateReemployment(input));

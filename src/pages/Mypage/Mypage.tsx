@@ -8,10 +8,11 @@ import LoginRequiredModal from "@/components/common/modal/LoginRequiredModal";
 import Modal from "@/components/common/modal/Modal";
 import ProfileCard from "@/components/Mypage/ProfileCard";
 import useLoginGuard from "@/hooks/useLoginGuard";
+import useDeleteAccountMutation from "@/queries/auth/useDeleteAccountMutation";
+import useLogoutMutation from "@/queries/auth/useLogoutMutation";
 import { useAuthStore } from "@/stores/authStore";
 import { useDiagnosisStore } from "@/stores/diagnosisStore";
 import { useMyPlanStore } from "@/stores/myPlanStore";
-import { useProfileStore } from "@/stores/profileStore";
 import { useReemploymentStore } from "@/stores/reemploymentStore";
 
 // 회원탈퇴 안내 문구
@@ -20,33 +21,39 @@ const WITHDRAW_DESCRIPTION =
 
 export default function Mypage() {
   const navigate = useNavigate();
-  const profile = useProfileStore((state) => state.profile);
-  const clearAuth = useAuthStore((state) => state.clearAuth);
+  const user = useAuthStore((state) => state.user);
   const clearPlans = useMyPlanStore((state) => state.clearPlans);
   const clearDiagnosis = useDiagnosisStore((state) => state.clearDiagnosis);
   const clearReemployment = useReemploymentStore((state) => state.clearReemployment);
   const { isLoggedIn, goLogin } = useLoginGuard();
+  const { mutate: logoutMutate } = useLogoutMutation();
+  const { mutate: deleteAccountMutate } = useDeleteAccountMutation();
 
   const [isLogoutOpen, setIsLogoutOpen] = useState(false);
   const [isWithdrawOpen, setIsWithdrawOpen] = useState(false);
 
-  // 로그아웃 처리, 추후 API 연결 지점
-  const handleLogout = () => {
-    clearAuth();
-    navigate("/");
-  };
-
-  // 회원탈퇴 처리, 저장 내역까지 초기화
-  const handleWithdraw = () => {
-    clearAuth();
+  // 저장된 진단 내역 초기화
+  const clearSavedData = () => {
     clearPlans();
     clearDiagnosis();
     clearReemployment();
-    navigate("/");
   };
 
+  // 로그아웃 처리, 실패해도 홈으로 이동
+  const handleLogout = () => logoutMutate(undefined, { onSettled: () => navigate("/") });
+
+  // 회원탈퇴 처리, 저장 내역까지 초기화
+  const handleWithdraw = () =>
+    deleteAccountMutate(undefined, {
+      onSuccess: () => {
+        clearSavedData();
+        navigate("/");
+      },
+      onError: () => setIsWithdrawOpen(false),
+    });
+
   // 로그아웃 상태 진입 시 로그인 유도
-  if (!isLoggedIn) {
+  if (!isLoggedIn || !user) {
     return (
       <div className="min-h-dvh w-full bg-bg-base">
         <LoginRequiredModal isOpen onCancel={() => navigate("/")} onConfirm={goLogin} />
@@ -64,7 +71,7 @@ export default function Mypage() {
 
       <div className="mx-auto flex w-full max-w-97.5 flex-col px-7 pb-28">
         <div className="mt-10">
-          <ProfileCard profile={profile} onEditClick={() => navigate("/mypage/profile")} />
+          <ProfileCard user={user} onEditClick={() => navigate("/mypage/profile")} />
         </div>
 
         <div className="mt-6 flex flex-col gap-3">

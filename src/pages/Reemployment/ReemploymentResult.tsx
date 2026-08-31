@@ -13,7 +13,7 @@ import { getGrade, getOriginalPension, getReductionRate, getScore } from "@/util
 
 export default function ReemploymentResult() {
   const navigate = useNavigate();
-  const nickname = useAuthStore((state) => state.user?.nickname);
+  const name = useAuthStore((state) => state.user?.name);
   const result = useReemploymentStore((state) => state.result);
 
   // 결과 없이 직접 진입 시 입력 화면 복귀
@@ -27,13 +27,13 @@ export default function ReemploymentResult() {
   const pensionSlide = (
     <div className="flex h-full flex-col items-center justify-center">
       <h2 className="text-center text-2xl leading-relaxed font-medium text-white">
-        {nickname}님의 재취업 후
+        {name}님의 재취업 후
         <br />월 예상 연금액은
         <br />
         <span className="font-bold text-mint">{formatNumber(result.reduced_monthly_pension)}</span>
         원입니다.
         <br />
-        {nickname}님의 노후 자산 대비 상태는
+        {name}님의 노후 자산 대비 상태는
       </h2>
 
       <div className="mt-12">
@@ -50,7 +50,7 @@ export default function ReemploymentResult() {
   const reductionSlide = (
     <div className="flex h-full flex-col">
       <h2 className="mt-20 text-center text-2xl leading-relaxed font-medium text-white">
-        {nickname}님의 재취업 후
+        {name}님의 재취업 후
         <br />월 연금 감액액은
         <br />
         <span className="font-bold text-mint">
