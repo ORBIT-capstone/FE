@@ -37,7 +37,7 @@ export default function AgeDetailTable({ rows, tone = "pink" }: AgeDetailTablePr
               {COLUMNS.map((column) => (
                 <th
                   key={column}
-                  className="border border-white/15 px-2 py-2 text-xs font-normal text-white"
+                  className="border border-white/15 px-2 py-2 text-xs font-normal whitespace-nowrap text-white"
                 >
                   {column}
                 </th>
@@ -48,28 +48,30 @@ export default function AgeDetailTable({ rows, tone = "pink" }: AgeDetailTablePr
           <tbody>
             {rows.map((row) => (
               <tr key={row.age}>
-                <td className="border border-white/15 px-2 py-2 text-xs text-white">{row.age}세</td>
-                <td className="border border-white/15 px-2 py-2 text-xs text-white">
+                <td className="border border-white/15 px-2 py-2 text-xs whitespace-nowrap tabular-nums text-white">
+                  {row.age}세
+                </td>
+                <td className="border border-white/15 px-2 py-2 text-xs whitespace-nowrap tabular-nums text-white">
                   {formatNumber(row.annualIncome)}
                 </td>
-                <td className="border border-white/15 px-2 py-2 text-xs text-white">
+                <td className="border border-white/15 px-2 py-2 text-xs whitespace-nowrap tabular-nums text-white">
                   {formatNumber(row.annualExpense)}
                 </td>
                 <td
-                  className={`border border-white/15 px-2 py-2 text-xs whitespace-nowrap ${
+                  className={`border border-white/15 px-2 py-2 text-xs whitespace-nowrap tabular-nums ${
                     row.annualShortage > 0 ? accentClass : "text-white"
                   }`}
                 >
                   {toShortageText(row.annualShortage)}
                 </td>
                 <td
-                  className={`border border-white/15 px-2 py-2 text-xs whitespace-nowrap ${
+                  className={`border border-white/15 px-2 py-2 text-xs whitespace-nowrap tabular-nums ${
                     row.cumulativeShortage > 0 ? accentClass : "text-white"
                   }`}
                 >
                   {toShortageText(row.cumulativeShortage)}
                 </td>
-                <td className="border border-white/15 px-2 py-2 text-xs text-white">
+                <td className="border border-white/15 px-2 py-2 text-xs whitespace-nowrap tabular-nums text-white">
                   {formatNumber(row.asset)}
                 </td>
               </tr>

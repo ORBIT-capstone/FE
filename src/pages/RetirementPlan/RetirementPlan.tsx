@@ -1,17 +1,16 @@
 import { useState } from "react";
 import { useNavigate, useParams } from "react-router-dom";
 import { getApiErrorMessage } from "@/api/apiError";
-import ageIcon from "@/assets/icons/ageIcon.svg";
-import assetIcon from "@/assets/icons/assetIcon.svg";
+import assetDepletionIcon from "@/assets/icons/assetDepletionIcon.svg";
 import BadIcon from "@/assets/icons/BadIcon.svg";
-import calenderIcon from "@/assets/icons/calenderIcon.svg";
-import hyperPrepareIcon from "@/assets/icons/hyperPrepareIcon.svg";
+import depletionAgeIcon from "@/assets/icons/depletionAgeIcon.svg";
 import MexpenseIcon from "@/assets/icons/MexpenseIcon.svg";
+import myAgeIcon from "@/assets/icons/MyAgeIcon.svg";
 import needIncomeIcon from "@/assets/icons/needIncomeIcon.svg";
 import SavingIcon from "@/assets/icons/SavingIcon.svg";
-import savingPrepareIcon from "@/assets/icons/savingPrepareIcon.svg";
 import SmileIcon from "@/assets/icons/SmileIcon.svg";
 import SoSoIcon from "@/assets/icons/SoSoIcon.svg";
+import targetStatusIcon from "@/assets/icons/targetStatusIcon.svg";
 import Button from "@/components/common/button/Button";
 import Loading from "@/components/common/Loading";
 import FixedBottomBar from "@/components/common/button/FixedBottomBar";
@@ -35,16 +34,8 @@ import {
 import useDiagnosisDetailQuery from "@/queries/diagnoses/useDiagnosisDetailQuery";
 import useSaveDiagnosisMutation from "@/queries/diagnoses/useSaveDiagnosisMutation";
 import type { ReadinessStatus } from "@/types/diagnosis";
-import type { RecommendationType } from "@/types/retirementPlan";
 import { formatWon } from "@/utils/format";
 import { getExpenseAdjust, getScore, toAgeDetailRows, toAssetFlow } from "@/utils/retirementPlan";
-
-// 추천 유형별 아이콘
-const RECOMMEND_TYPE_ICON: Record<RecommendationType, string> = {
-  SUFFICIENT: SmileIcon,
-  SAVING_ONLY: savingPrepareIcon,
-  SAVING_AND_INCOME: hyperPrepareIcon,
-};
 
 // 준비 상태별 아이콘
 const STATUS_ICON: Record<ReadinessStatus, string> = {
@@ -107,8 +98,8 @@ export default function RetirementPlan() {
           : errorMessage || "맞춤 설계를 불러오지 못했습니다";
 
     return (
-      <div className="min-h-dvh w-full bg-bg-base">
-        <div className="mx-auto flex min-h-dvh w-full max-w-97.5 flex-col px-7 pb-32">
+      <div className="flex min-h-svh w-full flex-col bg-bg-base">
+        <div className="mx-auto w-full max-w-97.5 flex-1 px-7 pb-8">
           <PageHeader title="맞춤 노후 설계" />
 
           {isGuideLoading ? (
@@ -141,40 +132,33 @@ export default function RetirementPlan() {
   ];
 
   const keyInfoItems: KeyInfoItem[] = [
-    { icon: ageIcon, label: "현재 나이", field: "current_age", value: `${plan.current_age}세` },
+    { icon: myAgeIcon, label: "현재 나이", value: `${plan.current_age}세` },
     {
-      icon: SmileIcon,
+      icon: targetStatusIcon,
       label: "목표 준비 상태 (추천 적용 시)",
-      field: "target_status",
       value: plan.target_status,
     },
     {
-      icon: assetIcon,
+      icon: assetDepletionIcon,
       label: "자산 고갈 여부",
-      field: "depleted",
       value: plan.depleted ? "예" : "아니오",
     },
     {
-      icon: calenderIcon,
+      icon: depletionAgeIcon,
       label: "예상 고갈 나이",
-      field: "depletion_age",
       value: plan.depletion_age === null ? "-" : `${plan.depletion_age}세`,
     },
   ];
 
   return (
-    <div className="min-h-dvh w-full bg-bg-base">
-      <div className="mx-auto flex min-h-dvh w-full max-w-97.5 flex-col px-7 pb-32">
+    <div className="flex min-h-svh w-full flex-col bg-bg-base">
+      <div className="mx-auto w-full max-w-97.5 flex-1 px-7 pb-8">
         <PageHeader title="맞춤 노후 설계" />
 
         <p className="mt-4 text-sm text-muted">진단 결과를 바탕으로 개선안을 확인하세요</p>
 
         <div className="mt-6 flex flex-col gap-6">
-          <RecommendTypeCard
-            icon={RECOMMEND_TYPE_ICON[plan.recommendation_type]}
-            title={recommendText.title}
-            description={recommendText.description}
-          />
+          <RecommendTypeCard title={recommendText.title} description={recommendText.description} />
 
           <CurrentStatusCard
             status={plan.status}

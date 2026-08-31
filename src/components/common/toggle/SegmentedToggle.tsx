@@ -3,12 +3,21 @@ export interface SegmentedToggleItem<T extends string> {
   value: T;
 }
 
+export type SegmentedToggleTone = "primary" | "mint";
+
+// 활성 항목 색상 계열
+const ACTIVE_CLASS: Record<SegmentedToggleTone, string> = {
+  primary: "bg-btn-active text-bg-base",
+  mint: "bg-mint text-bg-base",
+};
+
 interface SegmentedToggleProps<T extends string> {
   items: SegmentedToggleItem<T>[];
   value: T;
   onChange: (value: T) => void;
   // 항목 높이 지정용
   itemClassName?: string;
+  tone?: SegmentedToggleTone;
 }
 
 export default function SegmentedToggle<T extends string>({
@@ -16,6 +25,7 @@ export default function SegmentedToggle<T extends string>({
   value,
   onChange,
   itemClassName = "h-14",
+  tone = "primary",
 }: SegmentedToggleProps<T>) {
   return (
     <div className="flex overflow-hidden rounded-2xl bg-card">
@@ -28,7 +38,7 @@ export default function SegmentedToggle<T extends string>({
             type="button"
             onClick={() => onChange(item.value)}
             className={`flex-1 cursor-pointer rounded-2xl text-base font-bold transition-colors ${itemClassName} ${
-              isActive ? "bg-btn-active text-bg-base" : "text-neutral-400"
+              isActive ? ACTIVE_CLASS[tone] : "text-neutral-400"
             }`}
           >
             {item.label}

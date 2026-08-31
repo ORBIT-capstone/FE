@@ -1,9 +1,10 @@
 import { Navigate } from "react-router-dom";
-import infoIcon from "@/assets/icons/infoIcon.svg";
 import PageHeader from "@/components/common/header/PageHeader";
 import ResultPlaceholder from "@/components/common/result/ResultPlaceholder";
+import InfoTooltip from "@/components/common/tooltip/InfoTooltip";
 import DetailCard from "@/components/PensionScenario/DetailCard";
 import useDiagnosisResult from "@/hooks/useDiagnosisResult";
+import { INCOME_FACTOR_NOTICE } from "@/mocks/simulation";
 import { useSimulationStore } from "@/stores/simulationStore";
 import { formatWon } from "@/utils/format";
 import { isPensionEligible } from "@/utils/simulation";
@@ -39,8 +40,8 @@ export default function SimulationDetail() {
   const toAmountValue = (amount: number) => (amount > 0 ? formatWon(amount) : "해당없음");
 
   return (
-    <div className="min-h-dvh w-full bg-bg-base">
-      <div className="mx-auto w-full max-w-97.5 px-7 pb-10">
+    <div className="min-h-svh w-full bg-bg-base">
+      <div className="mx-auto w-full max-w-97.5 px-7 pb-page-safe">
         <PageHeader title={PAGE_TITLE} />
 
         {!isEligible && (
@@ -60,7 +61,7 @@ export default function SimulationDetail() {
 
           <DetailCard
             title="소득 반영 계수"
-            icon={<img src={infoIcon} alt="" className="size-6" />}
+            icon={<InfoTooltip message={INCOME_FACTOR_NOTICE} label="소득 반영 계수 설명 보기" />}
             rows={[{ value: `${result.income_factor}` }]}
           />
 

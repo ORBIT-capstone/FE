@@ -30,7 +30,7 @@ export const HOME_BANNERS: Record<UserType, HomeBannerContent> = {
       "자산 고갈 시점과 노후 준비 상태를",
       "간편하게 계산해 드립니다.",
     ],
-    buttonLabel: "계산하러가기",
+    buttonLabel: "은퇴자산 진단하기",
   },
 };
 

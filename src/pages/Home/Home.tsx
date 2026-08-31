@@ -1,5 +1,4 @@
 import HomeHeader from "@/components/Home/HomeHeader";
-import StarBackground from "@/components/common/StarBackground";
 import UserTypeToggle from "@/components/Home/UserTypeToggle";
 import EmployedHome from "@/pages/Home/EmployedHome";
 import RetiredHome from "@/pages/Home/RetiredHome";
@@ -12,10 +11,8 @@ export default function Home() {
   const setUserType = useUserTypeStore((state) => state.setUserType);
 
   return (
-    <div className="relative min-h-dvh w-full overflow-hidden bg-bg-base">
-      <StarBackground />
-
-      <div className="relative mx-auto w-full max-w-97.5 px-7 pb-28">
+    <div className="min-h-svh w-full bg-bg-base">
+      <div className="mx-auto w-full max-w-97.5 px-7 pb-nav-safe">
         <HomeHeader />
 
         {/* 로그인 여부에 따른 인사말 분기 */}

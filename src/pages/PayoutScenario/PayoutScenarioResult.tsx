@@ -57,8 +57,8 @@ export default function PayoutScenarioResult() {
   const handleSave = () => saveMutate(result, { onSuccess: () => navigate("/") });
 
   return (
-    <div className="min-h-dvh w-full bg-bg-base">
-      <div className="mx-auto w-full max-w-97.5 px-7 pb-10">
+    <div className="min-h-svh w-full bg-bg-base">
+      <div className="mx-auto w-full max-w-97.5 px-7 pb-page-safe">
         <PageHeader title={PAGE_TITLE} />
 
         {recommended && (

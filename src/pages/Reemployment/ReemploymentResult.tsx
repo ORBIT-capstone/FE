@@ -78,8 +78,8 @@ export default function ReemploymentResult() {
   );
 
   return (
-    <div className="h-dvh w-full bg-bg-base">
-      <div className="mx-auto flex h-dvh w-full max-w-97.5 flex-col px-7 pb-32">
+    <div className="flex h-svh w-full flex-col bg-bg-base">
+      <div className="mx-auto flex w-full max-w-97.5 flex-1 flex-col overflow-hidden px-7">
         <PageHeader title="재취업 연금 감액 계산결과" />
 
         <ResultSlider slides={[pensionSlide, reductionSlide]} />
