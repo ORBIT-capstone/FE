@@ -12,6 +12,7 @@ import MyInfoCard from "@/components/common/card/MyInfoCard";
 import type { MyInfoItem } from "@/components/common/card/MyInfoCard";
 import { MOCK_MONTHLY_PENSION } from "@/mocks/payoutScenario";
 import { usePayoutScenarioStore } from "@/stores/payoutScenarioStore";
+import { useAuthStore } from "@/stores/authStore";
 import { useProfileStore } from "@/stores/profileStore";
 import { calculateAge } from "@/utils/age";
 import { formatManWon } from "@/utils/format";
@@ -28,21 +29,23 @@ const GENDER_ICON = { male: genderMaleIcon, female: genderFemaleIcon };
 
 export default function PayoutScenario() {
   const navigate = useNavigate();
-  const profile = useProfileStore((state) => state.profile);
+  const user = useAuthStore((state) => state.user);
   const privateInfo = useProfileStore((state) => state.privateInfo);
   const earlyYears = usePayoutScenarioStore((state) => state.earlyYears);
   const setEarlyYears = usePayoutScenarioStore((state) => state.setEarlyYears);
 
-  // 마이페이지 저장값 기반 내 정보
+  const gender = user?.gender ?? "female";
+
+  // 회원 정보·개인정보 기반 내 정보
   const myInfoItems: [MyInfoItem, MyInfoItem, MyInfoItem, MyInfoItem] = [
-    { icon: ageIcon, label: "현재 나이", value: `${calculateAge(profile.birthDate)}세` },
+    { icon: ageIcon, label: "현재 나이", value: `${calculateAge(user?.birthDate ?? "")}세` },
     { icon: assetIcon, label: "보유 자산", value: formatManWon(Number(privateInfo.assets)) },
     {
       icon: expenseIcon,
       label: "월 생활비",
       value: formatManWon(Number(privateInfo.monthlyExpense)),
     },
-    { icon: GENDER_ICON[profile.gender], label: "성별", value: GENDER_LABEL[profile.gender] },
+    { icon: GENDER_ICON[gender], label: "성별", value: GENDER_LABEL[gender] },
   ];
 
   return (

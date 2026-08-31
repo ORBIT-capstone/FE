@@ -1,6 +1,7 @@
 import Button from "@/components/common/button/Button";
 import Input from "@/components/common/input/Input";
 import BirthDateField from "@/components/common/birthDate/BirthDateField";
+import GenderSelect from "@/components/common/gender/GenderSelect";
 import EmailField from "@/components/Signup/EmailField";
 import useSignupForm from "@/hooks/useSignupForm";
 
@@ -12,12 +13,16 @@ export default function Signup() {
     birthDate,
     password,
     passwordConfirm,
+    gender,
     isSubmittable,
+    isPending,
     isPasswordMatched,
+    errorMessage,
     handleNameChange,
     handleEmailIdChange,
     setEmailDomain,
     setBirthDate,
+    setGender,
     handlePasswordChange,
     handlePasswordConfirmChange,
     handleSubmit,
@@ -48,6 +53,8 @@ export default function Signup() {
 
           <BirthDateField value={birthDate} onChange={setBirthDate} />
 
+          <GenderSelect value={gender} onChange={setGender} variant="light" />
+
           <Input
             label="비밀번호 / Password"
             isPassword
@@ -72,8 +79,12 @@ export default function Signup() {
             )}
           </div>
 
+          {errorMessage && (
+            <p className="text-sm whitespace-pre-line text-btn-active">{errorMessage}</p>
+          )}
+
           <Button type="submit" disabled={!isSubmittable} className="mt-2">
-            완료
+            {isPending ? "가입 중..." : "완료"}
           </Button>
         </form>
       </div>

@@ -9,7 +9,7 @@ import { formatNumber } from "@/utils/format";
 
 export default function SimulationResult() {
   const navigate = useNavigate();
-  const nickname = useAuthStore((state) => state.user?.nickname);
+  const name = useAuthStore((state) => state.user?.name);
   const result = useSimulationStore((state) => state.result);
   const savePlan = useMyPlanStore((state) => state.savePlan);
 
@@ -31,7 +31,7 @@ export default function SimulationResult() {
         <PageHeader title="연금 시뮬레이션 결과" />
 
         <h2 className="mt-20 text-center text-2xl leading-relaxed font-medium text-white">
-          {nickname}님의 총 재직 월수는{" "}
+          {name}님의 총 재직 월수는{" "}
           <span className="text-3xl font-bold text-btn-active">{result.totalServiceYears}</span>
           년이며
           <br />

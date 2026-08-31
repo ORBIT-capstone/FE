@@ -2,7 +2,7 @@ import { useState } from "react";
 import type { ChangeEvent } from "react";
 import { useNavigate } from "react-router-dom";
 import { useDiagnosisStore } from "@/stores/diagnosisStore";
-import type { Gender } from "@/stores/profileStore";
+import type { Gender } from "@/types/auth";
 import { calculateDiagnosis } from "@/utils/diagnosis";
 
 // 숫자 외 문자 제거 처리

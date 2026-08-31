@@ -1,12 +1,14 @@
 import { useState } from "react";
 import type { ChangeEvent, FormEvent } from "react";
 import { useNavigate } from "react-router-dom";
-import { useProfileStore } from "@/stores/profileStore";
+import { getApiErrorMessage } from "@/api/auth/authError";
+import useSignupMutation from "@/queries/auth/useSignupMutation";
+import type { Gender } from "@/types/auth";
+import { toApiGender } from "@/types/auth";
 
 export default function useSignupForm() {
   const navigate = useNavigate();
-  const profile = useProfileStore((state) => state.profile);
-  const setProfile = useProfileStore((state) => state.setProfile);
+  const { mutate: signupMutate, isPending } = useSignupMutation();
 
   const [name, setName] = useState("");
   const [emailId, setEmailId] = useState("");
@@ -14,6 +16,10 @@ export default function useSignupForm() {
   const [birthDate, setBirthDate] = useState("");
   const [password, setPassword] = useState("");
   const [passwordConfirm, setPasswordConfirm] = useState("");
+  const [gender, setGender] = useState<Gender>("female");
+
+  // 회원가입 실패 안내 문구
+  const [errorMessage, setErrorMessage] = useState("");
 
   // 전체 필드 입력 여부
   const isFilled = [name, emailId, emailDomain, birthDate, password, passwordConfirm].every(
@@ -21,7 +27,7 @@ export default function useSignupForm() {
   );
 
   const isPasswordMatched = password === passwordConfirm;
-  const isSubmittable = isFilled && isPasswordMatched;
+  const isSubmittable = isFilled && isPasswordMatched && !isPending;
 
   const handleNameChange = (event: ChangeEvent<HTMLInputElement>) => setName(event.target.value);
 
@@ -34,14 +40,24 @@ export default function useSignupForm() {
   const handlePasswordConfirmChange = (event: ChangeEvent<HTMLInputElement>) =>
     setPasswordConfirm(event.target.value);
 
-  // 회원가입 요청 처리, 추후 tanstack-query mutation 연결 지점
+  // 회원가입 요청 처리
   const handleSubmit = (event: FormEvent<HTMLFormElement>) => {
     event.preventDefault();
     if (!isSubmittable) return;
 
-    // 가입 값 프로필 반영, 성별은 프로필 수정에서 설정
-    setProfile({ ...profile, name, birthDate, email: `${emailId}@${emailDomain}` });
-    navigate("/login");
+    signupMutate(
+      {
+        email: `${emailId}@${emailDomain}`,
+        password,
+        name,
+        birthDate,
+        gender: toApiGender(gender),
+      },
+      {
+        onSuccess: () => navigate("/login"),
+        onError: (error) => setErrorMessage(getApiErrorMessage(error, "회원가입에 실패했습니다")),
+      },
+    );
   };
 
   return {
@@ -51,12 +67,16 @@ export default function useSignupForm() {
     birthDate,
     password,
     passwordConfirm,
+    gender,
     isSubmittable,
+    isPending,
     isPasswordMatched,
+    errorMessage,
     handleNameChange,
     handleEmailIdChange,
     setEmailDomain,
     setBirthDate,
+    setGender,
     handlePasswordChange,
     handlePasswordConfirmChange,
     handleSubmit,

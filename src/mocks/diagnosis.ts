@@ -1,4 +1,4 @@
-import type { Gender } from "@/stores/profileStore";
+import type { Gender } from "@/types/auth";
 
 // 성별 기대수명, API 연동 시 응답값으로 대체
 export const LIFE_EXPECTANCY: Record<Gender, number> = {

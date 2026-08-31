@@ -13,17 +13,16 @@ export default function ProfileEdit() {
     birthDate,
     gender,
     isSubmittable,
+    isPending,
+    errorMessage,
     handleNameChange,
     setBirthDate,
     setGender,
     handleSave,
   } = useProfileEditForm();
 
-  // 저장 후 마이페이지 복귀 처리
-  const handleSubmit = () => {
-    handleSave();
-    navigate("/mypage");
-  };
+  // 저장 성공 시 마이페이지 복귀 처리
+  const handleSubmit = () => handleSave(() => navigate("/mypage"));
 
   return (
     <div className="min-h-dvh w-full bg-bg-base">
@@ -44,8 +43,10 @@ export default function ProfileEdit() {
           <GenderSelect value={gender} onChange={setGender} />
         </div>
 
+        {errorMessage && <p className="mt-6 text-sm text-btn-active">{errorMessage}</p>}
+
         <Button onClick={handleSubmit} disabled={!isSubmittable} className="mt-auto">
-          저장하기
+          {isPending ? "저장 중..." : "저장하기"}
         </Button>
       </div>
     </div>

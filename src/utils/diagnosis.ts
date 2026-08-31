@@ -1,5 +1,5 @@
 import { DETAIL_AGE_STEP, LIFE_EXPECTANCY, SUFFICIENT_SCORE } from "@/mocks/diagnosis";
-import type { Gender } from "@/stores/profileStore";
+import type { Gender } from "@/types/auth";
 
 export type DiagnosisStatus = "sufficient" | "insufficient";
 
