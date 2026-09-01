@@ -27,8 +27,8 @@ export default function Login() {
   } = useLoginForm();
 
   return (
-    <div className="min-h-dvh w-full bg-bg-base">
-      <div className="mx-auto flex min-h-dvh w-full max-w-97.5 flex-col px-12 pb-32">
+    <div className="min-h-svh w-full bg-bg-base">
+      <div className="mx-auto flex min-h-svh w-full max-w-97.5 flex-col px-12 pb-32">
         <h1 className="pt-48 text-center text-4xl font-extrabold tracking-wide text-title">
           LOGIN
         </h1>

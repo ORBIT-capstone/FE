@@ -1,10 +1,11 @@
-import { useState } from "react";
+import { useEffect, useRef, useState } from "react";
 import { useNavigate } from "react-router-dom";
 import { getApiErrorMessage } from "@/api/apiError";
 import usePrivateInfo from "@/hooks/usePrivateInfo";
 import usePayoutScenarioMutation from "@/queries/payoutScenario/usePayoutScenarioMutation";
 import { useAuthStore } from "@/stores/authStore";
 import { usePayoutScenarioStore } from "@/stores/payoutScenarioStore";
+import { useSimulationStore } from "@/stores/simulationStore";
 import { calculateAge } from "@/utils/age";
 
 // 시나리오 비교 가능 최소 근속연수
@@ -13,13 +14,26 @@ const MIN_SERVICE_YEARS = 10;
 export default function usePayoutScenarioForm() {
   const navigate = useNavigate();
   const user = useAuthStore((state) => state.user);
-  const { privateInfo } = usePrivateInfo();
+  const { privateInfo, isLoading } = usePrivateInfo();
   const earlyYears = usePayoutScenarioStore((state) => state.earlyYears);
   const setEarlyYears = usePayoutScenarioStore((state) => state.setEarlyYears);
   const setResult = usePayoutScenarioStore((state) => state.setResult);
+  const simulationResult = useSimulationStore((state) => state.result);
   const { mutate: compareMutate, isPending } = usePayoutScenarioMutation();
 
   const [errorMessage, setErrorMessage] = useState("");
+
+  // 인라인 편집용 월 연금, 이 화면에서만 조정
+  const [monthlyPension, setMonthlyPension] = useState("");
+  const isInitializedRef = useRef(false);
+
+  // 연금 시뮬레이션을 돌리고 왔으면 그 결과로 채움
+  useEffect(() => {
+    if (isLoading || isInitializedRef.current) return;
+
+    isInitializedRef.current = true;
+    setMonthlyPension(simulationResult ? String(simulationResult.monthly_pension) : "");
+  }, [isLoading, simulationResult]);
 
   // 마이페이지 저장값 기반 내 정보
   const baseInfo = {
@@ -65,6 +79,8 @@ export default function usePayoutScenarioForm() {
         total_service_years: baseInfo.serviceYears,
         // 조기수령 연수 매핑
         early_years: earlyYears,
+        // 월 연금 매핑, 비우면 서버 추정값 사용
+        monthly_pension: monthlyPension === "" ? undefined : Number(monthlyPension),
       },
       {
         onSuccess: (result) => {
@@ -79,6 +95,9 @@ export default function usePayoutScenarioForm() {
 
   return {
     baseInfo,
+    // 인라인 편집용 원 단위 문자열
+    monthlyPension,
+    setMonthlyPension,
     earlyYears,
     isPending,
     isSubmittable,

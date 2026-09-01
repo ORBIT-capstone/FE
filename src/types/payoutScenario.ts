@@ -11,9 +11,14 @@ export interface PayoutScenarioRequest {
   monthly_expenses: number;
   asset: number;
   gender: Gender;
+  // 기준 월 소득, 재직 중 월급
   base_monthly_income: number;
   total_service_years: number;
   early_years?: number;
+  // 월 연금 수령액, 생략하면 서버가 추정
+  monthly_pension?: number;
+  // 공제 연수
+  deduction_years?: number;
 }
 
 export interface ScenarioOutcome {

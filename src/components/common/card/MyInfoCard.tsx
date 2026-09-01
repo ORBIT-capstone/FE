@@ -11,7 +11,11 @@ interface MyInfoCardProps {
   onEditClick: () => void;
 }
 
-export default function MyInfoCard({ items, editLabel = "수정", onEditClick }: MyInfoCardProps) {
+export default function MyInfoCard({
+  items,
+  editLabel = "수정하기",
+  onEditClick,
+}: MyInfoCardProps) {
   return (
     <section>
       <div className="flex items-center justify-between">

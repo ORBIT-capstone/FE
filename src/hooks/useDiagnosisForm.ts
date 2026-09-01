@@ -1,10 +1,13 @@
-import { useState } from "react";
+import { useEffect, useRef, useState } from "react";
 import type { ChangeEvent } from "react";
 import { useNavigate } from "react-router-dom";
 import { getApiErrorMessage } from "@/api/apiError";
+import usePrivateInfo from "@/hooks/usePrivateInfo";
 import useRetirementDiagnosisMutation from "@/queries/diagnosis/useRetirementDiagnosisMutation";
+import { useAuthStore } from "@/stores/authStore";
 import { useDiagnosisStore } from "@/stores/diagnosisStore";
 import type { Gender } from "@/types/auth";
+import { calculateAge } from "@/utils/age";
 import { buildDiagnosisRequest } from "@/utils/diagnosis";
 import { formatNumber } from "@/utils/format";
 
@@ -14,8 +17,17 @@ const toNumericValue = (value: string) => value.replace(/[^0-9]/g, "");
 // 천 단위 콤마 표기값
 const toDisplayValue = (value: string) => (value === "" ? "" : formatNumber(Number(value)));
 
+// 생년월일 기반 나이 입력값
+const toAgeValue = (birthDate?: string) => {
+  const age = calculateAge(birthDate ?? "");
+
+  return age > 0 ? String(age) : "";
+};
+
 export default function useDiagnosisForm() {
   const navigate = useNavigate();
+  const user = useAuthStore((state) => state.user);
+  const { privateInfo, isLoading } = usePrivateInfo();
   const setDiagnosis = useDiagnosisStore((state) => state.setDiagnosis);
   const { mutate: diagnoseMutate, isPending } = useRetirementDiagnosisMutation();
 
@@ -25,6 +37,20 @@ export default function useDiagnosisForm() {
   const [assets, setAssets] = useState("");
   const [gender, setGender] = useState<Gender>("female");
   const [errorMessage, setErrorMessage] = useState("");
+
+  const isInitializedRef = useRef(false);
+
+  // 마이페이지에 등록된 값으로 채움
+  useEffect(() => {
+    if (isLoading || isInitializedRef.current) return;
+
+    isInitializedRef.current = true;
+    setCurrentAge(toAgeValue(user?.birthDate));
+    setMonthlyExpense(privateInfo.monthlyExpense);
+    setMonthlyPension(privateInfo.monthlyPension);
+    setAssets(privateInfo.assets);
+    setGender(user?.gender ?? "female");
+  }, [isLoading, privateInfo, user]);
 
   const isFilled = [currentAge, monthlyExpense, monthlyPension, assets].every(
     (value) => value !== "",
@@ -47,7 +73,7 @@ export default function useDiagnosisForm() {
 
     diagnoseMutate(buildDiagnosisRequest(input), {
       onSuccess: (result) => {
-        setDiagnosis(input, result);
+        setDiagnosis(result);
         navigate("/diagnosis/result");
       },
       onError: (error) => setErrorMessage(getApiErrorMessage(error, "진단에 실패했습니다")),

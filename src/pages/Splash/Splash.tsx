@@ -39,11 +39,11 @@ export default function Splash() {
   }, [markSplashShown, navigate]);
 
   return (
-    <div className="relative min-h-dvh w-full overflow-hidden bg-gradient-splash">
+    <div className="relative min-h-svh w-full overflow-hidden bg-gradient-splash">
       <StarBackground />
 
       <div
-        className={`relative mx-auto flex min-h-dvh w-full max-w-97.5 flex-col items-center px-7 transition-opacity duration-500 ${
+        className={`relative mx-auto flex min-h-svh w-full max-w-97.5 flex-col items-center px-7 transition-opacity duration-500 ${
           isVisible ? "opacity-100" : "opacity-0"
         }`}
       >

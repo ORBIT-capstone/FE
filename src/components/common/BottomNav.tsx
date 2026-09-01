@@ -38,7 +38,7 @@ const NAV_ITEMS = [
   },
 ];
 
-const ITEM_CLASS = "flex flex-1 flex-col items-center gap-1";
+const ITEM_CLASS = "flex h-full flex-1 flex-col items-center justify-center gap-1.5";
 
 export default function BottomNav() {
   const { isLoggedIn, isLoginModalOpen, closeLoginModal, goLogin, openLoginModal } =
@@ -46,47 +46,53 @@ export default function BottomNav() {
 
   return (
     <>
-      <nav className="fixed bottom-0 left-1/2 z-20 flex h-20 w-full max-w-97.5 -translate-x-1/2 items-center rounded-t-3xl border-t border-white/10 bg-card">
-        {NAV_ITEMS.map((item) =>
-          // 외부 사이트 탭은 새 창으로 이동
-          item.isExternal ? (
-            <a
-              key={item.path}
-              href={item.path}
-              target="_blank"
-              rel="noopener noreferrer"
-              className={ITEM_CLASS}
-            >
-              <img src={item.icon} alt="" className="h-8 w-auto" />
-              <span className="text-xs text-neutral-400">{item.label}</span>
-            </a>
-          ) : (
-            <NavLink
-              key={item.path}
-              to={item.path}
-              end
-              // 로그아웃 상태에서 로그인 필요 탭 진입 차단
-              onClick={(event) => {
-                if (!item.requireAuth || isLoggedIn) return;
+      <nav className="nav-safe fixed bottom-0 left-1/2 z-20 w-full max-w-97.5 -translate-x-1/2 rounded-t-3xl border-t border-white/10 bg-card">
+        <div className="flex h-24 items-center">
+          {NAV_ITEMS.map((item) =>
+            // 외부 사이트 탭은 새 창으로 이동
+            item.isExternal ? (
+              <a
+                key={item.path}
+                href={item.path}
+                target="_blank"
+                rel="noopener noreferrer"
+                className={ITEM_CLASS}
+              >
+                <img src={item.icon} alt="" className="h-9 w-auto" />
+                <span className="text-xs text-neutral-400">{item.label}</span>
+              </a>
+            ) : (
+              <NavLink
+                key={item.path}
+                to={item.path}
+                end
+                // 로그아웃 상태에서 로그인 필요 탭 진입 차단
+                onClick={(event) => {
+                  if (!item.requireAuth || isLoggedIn) return;
 
-                event.preventDefault();
-                openLoginModal();
-              }}
-              className={ITEM_CLASS}
-            >
-              {({ isActive }) => (
-                <>
-                  <img src={isActive ? item.activeIcon : item.icon} alt="" className="h-8 w-auto" />
-                  <span
-                    className={`text-xs ${isActive ? "font-bold text-white" : "text-neutral-400"}`}
-                  >
-                    {item.label}
-                  </span>
-                </>
-              )}
-            </NavLink>
-          ),
-        )}
+                  event.preventDefault();
+                  openLoginModal();
+                }}
+                className={ITEM_CLASS}
+              >
+                {({ isActive }) => (
+                  <>
+                    <img
+                      src={isActive ? item.activeIcon : item.icon}
+                      alt=""
+                      className="h-9 w-auto"
+                    />
+                    <span
+                      className={`text-xs ${isActive ? "font-bold text-white" : "text-neutral-400"}`}
+                    >
+                      {item.label}
+                    </span>
+                  </>
+                )}
+              </NavLink>
+            ),
+          )}
+        </div>
       </nav>
 
       <LoginRequiredModal

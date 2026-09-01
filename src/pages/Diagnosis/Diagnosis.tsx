@@ -24,8 +24,8 @@ export default function Diagnosis() {
   } = useDiagnosisForm();
 
   return (
-    <div className="min-h-dvh w-full bg-bg-base">
-      <div className="mx-auto flex min-h-dvh w-full max-w-97.5 flex-col px-7 pb-10">
+    <div className="min-h-svh w-full bg-bg-base">
+      <div className="mx-auto flex min-h-svh w-full max-w-97.5 flex-col px-7 pb-page-safe">
         <PageHeader title="은퇴 자산 진단" />
 
         <p className="mt-4 text-sm leading-relaxed text-muted">

@@ -1,8 +1,6 @@
 export interface KeyInfoItem {
   icon: string;
   label: string;
-  // API 응답 필드명 표기
-  field: string;
   value: string;
 }
 
@@ -22,8 +20,6 @@ export default function KeyInfoList({ items }: KeyInfoListProps) {
           <img src={item.icon} alt="" className="size-6 shrink-0" />
 
           <p className="text-sm text-white">{item.label}</p>
-
-          <span className="rounded bg-back-bg px-2 py-0.5 text-xs text-muted">{item.field}</span>
 
           <p className="ml-auto text-sm font-bold text-sub-yellow">{item.value}</p>
         </div>

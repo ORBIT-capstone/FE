@@ -74,8 +74,8 @@ export default function ReemploymentDetail() {
   const handleSave = () => saveMutate(result, { onSuccess: () => navigate("/") });
 
   return (
-    <div className="min-h-dvh w-full bg-bg-base">
-      <div className="mx-auto flex min-h-dvh w-full max-w-97.5 flex-col px-7 pb-48">
+    <div className="flex min-h-svh w-full flex-col bg-bg-base">
+      <div className="mx-auto w-full max-w-97.5 flex-1 px-7 pb-8">
         <PageHeader title={PAGE_TITLE} />
 
         <div className="mt-8 flex flex-col gap-6">

@@ -43,8 +43,8 @@ export default function Myplan() {
     : "저장된 진단 내역이 없습니다";
 
   return (
-    <div className="min-h-dvh w-full bg-bg-base">
-      <div className="mx-auto w-full max-w-97.5 px-7 pb-28">
+    <div className="min-h-svh w-full bg-bg-base">
+      <div className="mx-auto w-full max-w-97.5 px-7 pb-nav-safe">
         <PageHeader title="마이플랜" />
 
         <p className="mt-4 text-sm text-muted">최근에 진단하신 내역을 확인하실 수 있습니다</p>

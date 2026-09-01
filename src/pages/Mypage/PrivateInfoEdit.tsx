@@ -28,8 +28,8 @@ export default function PrivateInfoEdit() {
   const handleSubmit = () => handleSave(() => navigate("/mypage"));
 
   return (
-    <div className="min-h-dvh w-full bg-bg-base">
-      <div className="mx-auto flex min-h-dvh w-full max-w-97.5 flex-col px-7 pb-10">
+    <div className="min-h-svh w-full bg-bg-base">
+      <div className="mx-auto flex min-h-svh w-full max-w-97.5 flex-col px-7 pb-page-safe">
         <PageHeader title="개인정보 수정" />
 
         <p className="mt-4 text-sm text-muted">진단 및 시뮬레이션에 활용되는 정보를 수집합니다</p>
