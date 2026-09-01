@@ -38,7 +38,6 @@ function App() {
               </SplashGate>
             }
           />
-          <Route path="/add" element={<></>} />
           <Route path="/mypage" element={<Mypage />} />
           <Route path="/mypage/plan" element={<Myplan />} />
         </Route>

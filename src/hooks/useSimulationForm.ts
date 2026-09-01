@@ -7,6 +7,7 @@ import useEmployeeSimulateMutation from "@/queries/simulation/useEmployeeSimulat
 import { useAuthStore } from "@/stores/authStore";
 import { useSimulationStore } from "@/stores/simulationStore";
 import { calculateAge } from "@/utils/age";
+import { MAX_RETIRE_AGE } from "@/mocks/simulation";
 import { formatNumber } from "@/utils/format";
 import { buildSimulateRequest } from "@/utils/simulation";
 
@@ -49,9 +50,11 @@ export default function useSimulationForm() {
     (value) => value !== "",
   );
 
-  // 퇴직 예정 나이가 현재 나이보다 큰지 여부
+  // 퇴직 예정 나이가 현재 나이보다 크고 상한 이하인지 여부
   const isRetireAgeValid =
-    currentAge === "" || retireAge === "" || Number(retireAge) > Number(currentAge);
+    retireAge === "" ||
+    ((currentAge === "" || Number(retireAge) > Number(currentAge)) &&
+      Number(retireAge) <= MAX_RETIRE_AGE);
 
   const isSubmittable = isFilled && isRetireAgeValid && !isPending;
 
@@ -77,6 +80,7 @@ export default function useSimulationForm() {
   return {
     currentAge,
     retireAge,
+    maxRetireAge: MAX_RETIRE_AGE,
     // 천 단위 콤마 표기값, 요청에는 숫자만 사용
     monthlyIncome: monthlyIncome === "" ? "" : formatNumber(Number(monthlyIncome)),
     serviceYears,

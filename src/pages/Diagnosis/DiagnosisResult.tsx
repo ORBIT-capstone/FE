@@ -1,8 +1,10 @@
+import { useState } from "react";
 import { Navigate, useNavigate } from "react-router-dom";
 import { getApiErrorMessage } from "@/api/apiError";
 import Button from "@/components/common/button/Button";
 import Loading from "@/components/common/Loading";
 import PageHeader from "@/components/common/header/PageHeader";
+import Toast, { SAVE_TOAST_MESSAGE } from "@/components/common/toast/Toast";
 import AgeDetailTable from "@/components/common/result/AgeDetailTable";
 import AssetChangeChart from "@/components/common/result/AssetChangeChart";
 import ResultPlaceholder from "@/components/common/result/ResultPlaceholder";
@@ -43,6 +45,7 @@ const STATUS_TEXT: Record<
 
 export default function DiagnosisResult() {
   const navigate = useNavigate();
+  const [isToastOpen, setIsToastOpen] = useState(false);
   const calculatedResult = useDiagnosisStore((state) => state.result);
   const { result, isSaved, isLoading, errorMessage } = useDiagnosisResult(
     "RETIREMENT_ASSET",
@@ -93,7 +96,7 @@ export default function DiagnosisResult() {
   ];
 
   // 진단 결과 저장 후 홈 복귀 처리
-  const handleSave = () => saveMutate(result, { onSuccess: () => navigate("/") });
+  const handleSave = () => saveMutate(result, { onSuccess: () => setIsToastOpen(true) });
 
   return (
     <div className="min-h-svh w-full bg-bg-base">
@@ -128,6 +131,7 @@ export default function DiagnosisResult() {
         )}
       </div>
       {isPending && <Loading variant="overlay" message="결과를 저장하는 중입니다" />}
+      {isToastOpen && <Toast message={SAVE_TOAST_MESSAGE} onClose={() => navigate("/")} />}
     </div>
   );
 }
