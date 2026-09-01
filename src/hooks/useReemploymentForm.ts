@@ -1,4 +1,4 @@
-import { useState } from "react";
+import { useEffect, useRef, useState } from "react";
 import type { ChangeEvent } from "react";
 import { useNavigate } from "react-router-dom";
 import { getApiErrorMessage } from "@/api/apiError";
@@ -15,13 +15,23 @@ const toNumericValue = (value: string) => value.replace(/[^0-9]/g, "");
 export default function useReemploymentForm() {
   const navigate = useNavigate();
   const user = useAuthStore((state) => state.user);
-  const { privateInfo } = usePrivateInfo();
+  const { privateInfo, isLoading } = usePrivateInfo();
   const setReemployment = useReemploymentStore((state) => state.setReemployment);
   const { mutate: reductionMutate, isPending } = useReductionMutation();
 
   // 재취업 월 소득, 원 단위
   const [monthlyIncome, setMonthlyIncome] = useState("");
   const [errorMessage, setErrorMessage] = useState("");
+
+  const isInitializedRef = useRef(false);
+
+  // 마이페이지 월급으로 채움
+  useEffect(() => {
+    if (isLoading || isInitializedRef.current) return;
+
+    isInitializedRef.current = true;
+    setMonthlyIncome(privateInfo.monthlyIncome);
+  }, [isLoading, privateInfo]);
 
   // 마이페이지 저장값 기반 내 정보
   const baseInfo = {
@@ -57,7 +67,7 @@ export default function useReemploymentForm() {
       },
       {
         onSuccess: (result) => {
-          setReemployment({ monthlyIncome }, result);
+          setReemployment(result);
           navigate("/reemployment/result");
         },
         onError: (error) => setErrorMessage(getApiErrorMessage(error, "감액 계산에 실패했습니다")),

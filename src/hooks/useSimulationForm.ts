@@ -1,17 +1,29 @@
-import { useState } from "react";
+import { useEffect, useRef, useState } from "react";
 import type { ChangeEvent } from "react";
 import { useNavigate } from "react-router-dom";
 import { getApiErrorMessage } from "@/api/apiError";
+import usePrivateInfo from "@/hooks/usePrivateInfo";
 import useEmployeeSimulateMutation from "@/queries/simulation/useEmployeeSimulateMutation";
+import { useAuthStore } from "@/stores/authStore";
 import { useSimulationStore } from "@/stores/simulationStore";
+import { calculateAge } from "@/utils/age";
 import { formatNumber } from "@/utils/format";
 import { buildSimulateRequest } from "@/utils/simulation";
 
 // 숫자 외 문자 제거 처리
 const toNumericValue = (value: string) => value.replace(/[^0-9]/g, "");
 
+// 생년월일 기반 나이 입력값
+const toAgeValue = (birthDate?: string) => {
+  const age = calculateAge(birthDate ?? "");
+
+  return age > 0 ? String(age) : "";
+};
+
 export default function useSimulationForm() {
   const navigate = useNavigate();
+  const user = useAuthStore((state) => state.user);
+  const { privateInfo, isLoading } = usePrivateInfo();
   const setSimulation = useSimulationStore((state) => state.setSimulation);
   const { mutate: simulateMutate, isPending } = useEmployeeSimulateMutation();
 
@@ -20,6 +32,18 @@ export default function useSimulationForm() {
   const [monthlyIncome, setMonthlyIncome] = useState("");
   const [serviceYears, setServiceYears] = useState("");
   const [errorMessage, setErrorMessage] = useState("");
+
+  const isInitializedRef = useRef(false);
+
+  // 마이페이지에 등록된 값으로 채움, 퇴직 예정 나이는 직접 입력
+  useEffect(() => {
+    if (isLoading || isInitializedRef.current) return;
+
+    isInitializedRef.current = true;
+    setCurrentAge(toAgeValue(user?.birthDate));
+    setMonthlyIncome(privateInfo.monthlyIncome);
+    setServiceYears(privateInfo.serviceYears);
+  }, [isLoading, privateInfo, user]);
 
   const isFilled = [currentAge, retireAge, monthlyIncome, serviceYears].every(
     (value) => value !== "",
@@ -43,7 +67,7 @@ export default function useSimulationForm() {
 
     simulateMutate(buildSimulateRequest(input), {
       onSuccess: (result) => {
-        setSimulation(input, result);
+        setSimulation(result);
         navigate("/pension-scenario/result");
       },
       onError: (error) => setErrorMessage(getApiErrorMessage(error, "시뮬레이션에 실패했습니다")),

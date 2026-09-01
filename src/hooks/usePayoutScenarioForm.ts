@@ -5,6 +5,7 @@ import usePrivateInfo from "@/hooks/usePrivateInfo";
 import usePayoutScenarioMutation from "@/queries/payoutScenario/usePayoutScenarioMutation";
 import { useAuthStore } from "@/stores/authStore";
 import { usePayoutScenarioStore } from "@/stores/payoutScenarioStore";
+import { useSimulationStore } from "@/stores/simulationStore";
 import { calculateAge } from "@/utils/age";
 
 // 시나리오 비교 가능 최소 근속연수
@@ -17,6 +18,7 @@ export default function usePayoutScenarioForm() {
   const earlyYears = usePayoutScenarioStore((state) => state.earlyYears);
   const setEarlyYears = usePayoutScenarioStore((state) => state.setEarlyYears);
   const setResult = usePayoutScenarioStore((state) => state.setResult);
+  const simulationResult = useSimulationStore((state) => state.result);
   const { mutate: compareMutate, isPending } = usePayoutScenarioMutation();
 
   const [errorMessage, setErrorMessage] = useState("");
@@ -25,13 +27,13 @@ export default function usePayoutScenarioForm() {
   const [monthlyPension, setMonthlyPension] = useState("");
   const isInitializedRef = useRef(false);
 
-  // 개인정보 조회 후 저장된 월 연금으로 초기화
+  // 연금 시뮬레이션을 돌리고 왔으면 그 결과로 채움
   useEffect(() => {
     if (isLoading || isInitializedRef.current) return;
 
     isInitializedRef.current = true;
-    setMonthlyPension(privateInfo.monthlyPension);
-  }, [isLoading, privateInfo]);
+    setMonthlyPension(simulationResult ? String(simulationResult.monthly_pension) : "");
+  }, [isLoading, simulationResult]);
 
   // 마이페이지 저장값 기반 내 정보
   const baseInfo = {

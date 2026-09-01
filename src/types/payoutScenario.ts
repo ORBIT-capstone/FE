@@ -17,6 +17,8 @@ export interface PayoutScenarioRequest {
   early_years?: number;
   // 월 연금 수령액, 생략하면 서버가 추정
   monthly_pension?: number;
+  // 공제 연수
+  deduction_years?: number;
 }
 
 export interface ScenarioOutcome {

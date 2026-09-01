@@ -36,11 +36,6 @@ export interface LogoutRequest {
   refreshToken: string;
 }
 
-// 토큰 재발급 요청
-export interface RefreshTokenRequest {
-  refreshToken: string;
-}
-
 export const toApiGender = (gender: Gender): ApiGender => (gender === "male" ? "MALE" : "FEMALE");
 
 export const toGender = (gender: ApiGender): Gender => (gender === "MALE" ? "male" : "female");
