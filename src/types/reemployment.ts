@@ -1,11 +1,6 @@
 import type { Gender } from "@/types/auth";
 import type { DiagnosisTimelinePoint, ReadinessStatus } from "@/types/diagnosis";
 
-// 입력 화면 값, 금액은 원 단위 문자열
-export interface ReemploymentInput {
-  monthlyIncome: string;
-}
-
 export interface ReductionRequest {
   current_age: number;
   monthly_expenses: number;
