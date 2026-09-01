@@ -67,13 +67,9 @@ export default function Login() {
           </Button>
         </form>
 
-        <div className="mt-auto flex items-center justify-center gap-3 text-base text-white">
+        <div className="mt-auto flex items-center justify-center text-base text-white">
           <Link to="/signup" className="hover:underline">
             회원가입
-          </Link>
-          <span className="text-neutral-400">|</span>
-          <Link to="/find-account" className="hover:underline">
-            계정찾기
           </Link>
         </div>
       </div>

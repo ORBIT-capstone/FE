@@ -3,7 +3,6 @@ import type { ChangeEvent } from "react";
 import { getApiErrorMessage } from "@/api/apiError";
 import usePrivateInfo from "@/hooks/usePrivateInfo";
 import useUpdateMeMutation from "@/queries/user/useUpdateMeMutation";
-import { useProfileStore } from "@/stores/profileStore";
 import { formatNumber } from "@/utils/format";
 
 // 숫자 외 문자 제거 처리
@@ -17,7 +16,6 @@ const toOptionalNumber = (value: string) => (value === "" ? undefined : Number(v
 
 export default function usePrivateInfoForm() {
   const { privateInfo, isLoading } = usePrivateInfo();
-  const setStoredMonthlyIncome = useProfileStore((state) => state.setMonthlyIncome);
   const { mutate: updateMeMutate, isPending } = useUpdateMeMutation();
 
   const [assets, setAssets] = useState("");
@@ -49,11 +47,9 @@ export default function usePrivateInfoForm() {
     (setValue: (value: string) => void) => (event: ChangeEvent<HTMLInputElement>) =>
       setValue(toNumericValue(event.target.value));
 
-  // 개인정보 수정 요청 처리, 월급은 API 미지원으로 로컬 보관
+  // 개인정보 수정 요청 처리
   const handleSave = (onSuccess: () => void) => {
     if (!isSubmittable) return;
-
-    setStoredMonthlyIncome(monthlyIncome);
 
     updateMeMutate(
       {
@@ -61,6 +57,7 @@ export default function usePrivateInfoForm() {
         monthlyExpenses: Number(monthlyExpense),
         currentYears: Number(serviceYears),
         monthlyPension: toOptionalNumber(monthlyPension),
+        monthlyIncome: toOptionalNumber(monthlyIncome),
       },
       {
         onSuccess,

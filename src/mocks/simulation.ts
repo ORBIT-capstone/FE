@@ -1,3 +1,6 @@
+// 퇴직 예정 나이 상한
+export const MAX_RETIRE_AGE = 100;
+
 // 연금 수급 기준 재직월수
 export const PENSION_ELIGIBLE_MONTHS = 120;
 

@@ -1,9 +1,11 @@
+import { useState } from "react";
 import { Navigate, useNavigate, useParams } from "react-router-dom";
 import { getApiErrorMessage } from "@/api/apiError";
 import astronaut from "@/assets/images/astronut2.svg";
 import Button from "@/components/common/button/Button";
 import Loading from "@/components/common/Loading";
 import PageHeader from "@/components/common/header/PageHeader";
+import Toast, { SAVE_TOAST_MESSAGE } from "@/components/common/toast/Toast";
 import ResultPlaceholder from "@/components/common/result/ResultPlaceholder";
 import useDiagnosisResult from "@/hooks/useDiagnosisResult";
 import useSaveDiagnosisMutation from "@/queries/diagnoses/useSaveDiagnosisMutation";
@@ -16,6 +18,7 @@ const PAGE_TITLE = "연금 시뮬레이션 결과";
 
 export default function SimulationResult() {
   const navigate = useNavigate();
+  const [isToastOpen, setIsToastOpen] = useState(false);
   const { id } = useParams();
   const name = useAuthStore((state) => state.user?.name);
   const calculatedResult = useSimulationStore((state) => state.result);
@@ -50,7 +53,7 @@ export default function SimulationResult() {
   const amount = isEligible ? result.monthly_pension : result.lump_sum;
 
   // 시뮬레이션 결과 저장 후 홈 복귀 처리
-  const handleSave = () => saveMutate(result, { onSuccess: () => navigate("/") });
+  const handleSave = () => saveMutate(result, { onSuccess: () => setIsToastOpen(true) });
 
   // 저장된 결과는 ID 를 유지한 상세 경로로 이동
   const detailPath = isSaved ? `/pension-scenario/detail/${id}` : "/pension-scenario/detail";
@@ -96,6 +99,7 @@ export default function SimulationResult() {
         </div>
       </div>
       {isPending && <Loading variant="overlay" message="결과를 저장하는 중입니다" />}
+      {isToastOpen && <Toast message={SAVE_TOAST_MESSAGE} onClose={() => navigate("/")} />}
     </div>
   );
 }
