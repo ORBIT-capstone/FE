@@ -15,6 +15,7 @@ import Button from "@/components/common/button/Button";
 import Loading from "@/components/common/Loading";
 import FixedBottomBar from "@/components/common/button/FixedBottomBar";
 import PageHeader from "@/components/common/header/PageHeader";
+import Toast, { SAVE_TOAST_MESSAGE } from "@/components/common/toast/Toast";
 import ChevronIcon from "@/components/common/icon/ChevronIcon";
 import AgeDetailTable from "@/components/common/result/AgeDetailTable";
 import CurrentStatusCard from "@/components/RetirementPlan/CurrentStatusCard";
@@ -46,6 +47,7 @@ const STATUS_ICON: Record<ReadinessStatus, string> = {
 
 export default function RetirementPlan() {
   const navigate = useNavigate();
+  const [isToastOpen, setIsToastOpen] = useState(false);
   const { id } = useParams();
 
   // 마이플랜 진입이면 저장된 결과를 조회하고 재계산하지 않음
@@ -81,7 +83,7 @@ export default function RetirementPlan() {
   const handleSave = () => {
     if (!plan) return;
 
-    saveMutate(plan, { onSuccess: () => navigate("/") });
+    saveMutate(plan, { onSuccess: () => setIsToastOpen(true) });
   };
 
   // 개인정보가 없거나 요청 실패·로딩 중 안내 화면
@@ -240,6 +242,7 @@ export default function RetirementPlan() {
         </FixedBottomBar>
       )}
       {isSaving && <Loading variant="overlay" message="노후 설계를 저장하는 중입니다" />}
+      {isToastOpen && <Toast message={SAVE_TOAST_MESSAGE} onClose={() => navigate("/")} />}
     </div>
   );
 }

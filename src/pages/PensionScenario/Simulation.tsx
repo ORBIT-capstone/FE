@@ -10,6 +10,7 @@ export default function Simulation() {
     retireAge,
     monthlyIncome,
     serviceYears,
+    maxRetireAge,
     isRetireAgeValid,
     isSubmittable,
     isPending,
@@ -53,7 +54,7 @@ export default function Simulation() {
 
             {!isRetireAgeValid && (
               <p className="mt-2 text-sm text-btn-active">
-                퇴직 예정 나이는 현재 나이보다 커야 합니다
+                퇴직 예정 나이는 현재 나이보다 크고 {maxRetireAge}세 이하여야 합니다
               </p>
             )}
           </div>
